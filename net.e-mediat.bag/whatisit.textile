@@ -1,0 +1,16 @@
+h1. Bundesamt für Gesundheit Publikationsdaten support
+
+__Copyright 2013, MEDEVIT <office@medevit.at>__ 
+
+*Support für die Verarbeitung der BAG Publikationsdaten*  
+
+Dieses Java-Projekt beinhaltet Dateien welcher zur Bearbeitung der BAG Publikationsdaten verwendet werden.
+Die Publikationsdaten werden "hier":http://bag.e-mediat.net/SL2007.Web.External/Default.aspx?webgrab=ignore zur Verfügung gestellt.
+
+"Hier":http://bag.e-mediat.net/SL2007.Web.External/File.axd?file=XMLPublications.zip können die jeweils aktuellen BAG Daten bezogen werden.
+
+*Update-Zyklus*  Die Publikationsdateien für den nächsten Monat stehen jeweils am 27. des Monats gegen Mittag bereit
+
+h2. Sponsor
+
+Development of this project was sponsored by Dr. med. Franz Marty, "Medizinisches Zentrum, gleis d":http://www.mez-chur.com/ 

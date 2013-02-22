@@ -1,0 +1,12 @@
+<!-- Build the Web service client for Pharma and Non-Pharma using JAX-WS -->
+<project default="generate-jaxb-code">
+	<target name="generate-jaxb-code">
+		<java classname="com.sun.tools.internal.xjc.XJCFacade">
+			<arg value="-d" />
+			<arg value="src-gen" />
+			<arg value="-p" />
+			<arg value="at.medevit.ch.artikelstamm" />
+			<arg value="src/at/medevit/ch/artikelstamm/Elexis_Artikelstamm_v001.xsd" />
+		</java>
+	</target>
+</project>

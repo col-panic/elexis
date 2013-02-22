@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  Copyright 2010 e-mediat AG -->
+<xs:schema xmlns="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://swissindex.e-mediat.net/SwissindexNonPharma_out_V101" elementFormDefault="qualified" attributeFormDefault="unqualified" version="101" id="SwissindexNonPharma_out_V101">
+  <xs:element name="NONPHARMA">
+    <xs:annotation>
+      <xs:documentation xml:lang="EN">Nonpharma articles</xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ITEM" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="GTIN" nillable="false">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Reference number (GTIN = Global trade item number)</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                	<xs:restriction base="xs:string">
+
+                	</xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="PHAR" nillable="false">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Pharmacode</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:integer"/>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="STATUS">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Status, A=active, I=inactive</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="1"/>
+                    <xs:enumeration value="A">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="EN">Active</xs:documentation>
+                      </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="I">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="EN">Inactive</xs:documentation>
+                      </xs:annotation>
+                    </xs:enumeration>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="STDATE" type="xs:dateTime">
+                <xs:annotation>
+                  <xs:documentation>Date of last status change</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="LANG">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Language</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="DSCR" nillable="false">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Product  description, e.g. COSANUM Handschuhe Vinyl GrL puderfrei Box</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="ADDSCR" nillable="false" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Additional description, e.g. 100 Stk</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="50"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="COMP" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation>Manufacturer</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="NAME">
+                      <xs:annotation>
+                        <xs:documentation>Company Name</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:maxLength value="101"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                    <xs:element name="GLN" nillable="false" minOccurs="0" maxOccurs="1">
+                      <xs:annotation>
+                        <xs:documentation>Company GLN</xs:documentation>
+                      </xs:annotation>
+                      <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                          <xs:maxLength value="13"/>
+                        </xs:restriction>
+                      </xs:simpleType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="DT" type="xs:dateTime" use="required">
+              <xs:annotation>
+                <xs:documentation>Date and time of last data change</xs:documentation>
+              </xs:annotation>
+            </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="RESULT">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="OK_ERROR">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="5"/>
+                    <xs:enumeration value="OK">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="EN">Result is OK</xs:documentation>
+                      </xs:annotation>
+                    </xs:enumeration>
+                    <xs:enumeration value="ERROR">
+                      <xs:annotation>
+                        <xs:documentation xml:lang="EN">Error during data access</xs:documentation>
+                      </xs:annotation>
+                    </xs:enumeration>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="NBR_RECORD" type="xs:int" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Number of records</xs:documentation>
+                </xs:annotation>
+              </xs:element>
+              <xs:element name="ERROR_CODE" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">
+                    Error Code
+                    1 = invalid parameter
+                    2 = server error
+                  </xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="20"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="MESSAGE" minOccurs="0">
+                <xs:annotation>
+                  <xs:documentation xml:lang="EN">Message</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="2000"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+      <xs:attribute name="CREATION_DATETIME" type="xs:dateTime" use="required">
+        <xs:annotation>
+          <xs:documentation>Date and time of data download</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
