@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.swissindex.format"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar" sourcepath="lib/commons-cli-1.2-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/at.medevit.ch.artikelstamm"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.e-mediat.bag"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

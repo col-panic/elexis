@@ -1,0 +1,25 @@
+h1. Artikelstamm Datensatz Konverter
+
+__Copyright 2013, MEDEVIT <office@medevit.at>__ 
+
+@Convert@ erstellt auf der Basis der "swissindex":http://www.refdata.ch Daten, welche mittels  @at.medevit.swissindex.client@ bezogen werden den Artikelstamm Datensatz (siehe @at.medevit.ch.artikelstamm@). 
+
+Es existieren mehrere Varianten dieses Datensatzes. @Convert@ unterstützt dabei die Varianten @v1@  und @v1b@. Informationen dazu, die aktuelle Dokumentation zu diesem Format, sowie aktuelle Datensätze sind unter "Elexis Artikelstamm Information":http://artikelstamm.elexis.info zu finden.
+
+Um das Kommandozeilen-Tool wie in folgendem Beispiel angegeben ausführen zu können, muss die Launch-Configuration @Convert.launch@  als __Runnable JAR File__  exportiert werden. Die Ausführung erfordert Java 7.
+
+Anwendungsbeispiel:
+
+bc.. 
+artikelstamm@loft7168:~$ /opt/jre1.7.0_13/bin/java -jar ConvertToArtikelstamm.jar
+usage: ConvertToArtikelstamm
+ -inboundFile <inboundFile>        the file to read the source data from
+ -preparationsFile <inboundFile>   enrich data with preparations file
+
+/opt/jre1.7.0/bin/java -jar ConvertToArtikelstamm.jar -inboundFile 
+	/srv/www/artikelstamm.elexis.info/swissindex_PHARMA_130213.xml 
+	-preparationsFile Preparations.xml > PHARMAandBAGtoArtikelstamm.log
+
+h2. Sponsor
+
+Development of this project was sponsored by Dr. med. Franz Marty, "Medizinisches Zentrum, gleis d":http://www.mez-chur.com/ 
