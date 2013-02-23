@@ -19,7 +19,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public class ATCParser extends DefaultHandler {
 	
-	private List<ATCDefinition> definitions = new ArrayList<>();
+	private List<ATCDefinition> definitions = new ArrayList<ATCDefinition>();
 	
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes)

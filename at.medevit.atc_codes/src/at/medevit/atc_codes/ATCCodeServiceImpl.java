@@ -24,7 +24,7 @@ public class ATCCodeServiceImpl implements ATCCodeService {
 	
 	@Override
 	public List<ATCCode> getHierarchyForATCCode(String atcCode){
-		ArrayList<ATCCode> ret = new ArrayList<>();
+		ArrayList<ATCCode> ret = new ArrayList<ATCCode>();
 		ATCCode root = getForATCCode(atcCode);
 		if (root != null) {
 			ret.add(root);

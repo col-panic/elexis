@@ -53,7 +53,7 @@ public class ATCCodes {
 			ObjectInput input = new ObjectInputStream(is);
 			try {
 				// deserialize the List
-				atcCodesMap = (HashMap<String, ATCCode>) input.readObject();
+				atcCodesMap = (HashMap<java.lang.String,at.medevit.atc_codes.ATCCode>) input.readObject();
 			} finally {
 				input.close();
 			}
@@ -87,7 +87,7 @@ public class ATCCodes {
 	
 	protected void initHashMap(List<ATCDefinition> atcDefinitions,
 		HashMap<String, ATCDDDDefinition> atcDDDDefinitions){
-		atcCodesMap = new HashMap<>();
+		atcCodesMap = new HashMap<String, at.medevit.atc_codes.ATCCode>();
 		
 		for (ATCDefinition def : atcDefinitions) {
 			ATCDDDDefinition dddDef = atcDDDDefinitions.get(def.atcCode);

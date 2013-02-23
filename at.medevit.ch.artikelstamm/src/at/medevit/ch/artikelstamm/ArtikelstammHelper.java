@@ -154,7 +154,7 @@ public class ArtikelstammHelper {
 			if (artikelstamm.getTYPE().equals(ArtikelstammConstants.TYPE.N))
 				throw new IllegalArgumentException("Trying to enrich Non-Pharma artikelstamm data");
 			
-			itemPharmacodeCache = new HashMap<>(artikelstamm.getITEM().size());
+			itemPharmacodeCache = new HashMap<String, ITEM>(artikelstamm.getITEM().size());
 			for (ITEM item : artikelstamm.getITEM()) {
 				itemPharmacodeCache.put(item.getPHAR().toString(), item);
 			}
@@ -181,7 +181,7 @@ public class ArtikelstammHelper {
 			if (artikelstamm.getTYPE().equals(ArtikelstammConstants.TYPE.N))
 				throw new IllegalArgumentException("Trying to enrich Non-Pharma artikelstamm data");
 			
-			itemGTINCache = new HashMap<>(artikelstamm.getITEM().size());
+			itemGTINCache = new HashMap<String, ITEM>(artikelstamm.getITEM().size());
 			for (ITEM item : artikelstamm.getITEM()) {
 				if (item.getGTIN().length() < 13)
 					continue;

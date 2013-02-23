@@ -21,7 +21,7 @@ public class ATCDDDParser extends DefaultHandler {
 	// TODO there may exist multiple entries per ATC-Code depending on AdmCode
 	// currently these are silently thrown away, if later on they may be used
 	// somehow this has to be changed!
-	private HashMap<String, ATCDDDDefinition> dddDefinitions = new HashMap<>();
+	private HashMap<String, ATCDDDDefinition> dddDefinitions = new HashMap<String, ATCDDDDefinition>();
 	
 	@Override
 	public void startElement(String uri, String localName, String qName, Attributes attributes)
