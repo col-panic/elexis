@@ -4,5 +4,5 @@ Bundle-Name: Elexis Artikelstamm Format
 Bundle-SymbolicName: at.medevit.ch.artikelstamm
 Bundle-Version: 1.0.0.qualifier
 Export-Package: at.medevit.ch.artikelstamm
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: medevit.at
