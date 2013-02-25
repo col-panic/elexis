@@ -299,7 +299,7 @@ public class ArtikelstammImporter extends ImporterPage {
 		int pharmaCumulV = ArtikelstammItem.getCumulatedVersion(TYPE.P);
 		int nonPharmaCumulV = ArtikelstammItem.getCumulatedVersion(TYPE.N);
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/YYYY");
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
 		
 		lblVERSION.setText("Pharma "
 			+ sdf.format(ArtikelstammHelper.getDateFromCumulatedVersionNumber(pharmaCumulV))
