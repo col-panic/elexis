@@ -34,7 +34,7 @@ import at.medevit.atc_codes.parser.ATCParser.ATCDefinition;
 
 public class ATCCodes {
 	
-	public static final String ATC_CODES_SERIALIZED_FILE = "/ATCCodesMap.ser";
+	public static final String ATC_CODES_SERIALIZED_FILE = "/lib/ATCCodesMap.ser";
 	
 	private static ATCCodes instance = null;
 	private HashMap<String, ATCCode> atcCodesMap = null;
