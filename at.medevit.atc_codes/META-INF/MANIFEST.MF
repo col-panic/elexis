@@ -10,3 +10,5 @@ Service-Component: OSGI-INF/atccodeservice.xml
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: at.medevit.atc_codes.internal.Activator
 Export-Package: at.medevit.atc_codes
+Bundle-ClassPath: lib/,
+ .

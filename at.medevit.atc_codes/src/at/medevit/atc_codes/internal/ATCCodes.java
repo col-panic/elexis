@@ -33,8 +33,10 @@ import at.medevit.atc_codes.parser.ATCParser;
 import at.medevit.atc_codes.parser.ATCParser.ATCDefinition;
 
 public class ATCCodes {
-	private static ATCCodes instance = null;
 	
+	public static final String ATC_CODES_SERIALIZED_FILE = "/ATCCodesMap.ser";
+	
+	private static ATCCodes instance = null;
 	private HashMap<String, ATCCode> atcCodesMap = null;
 	
 	private ATCCodes(){}
@@ -49,11 +51,12 @@ public class ATCCodes {
 	public void initHashMapFromSerializedObject(){
 		try {
 			// use buffering
-			InputStream is = ATCCodes.class.getResourceAsStream("ATCCodesMap.ser");
+			InputStream is = ATCCodes.class.getResourceAsStream(ATC_CODES_SERIALIZED_FILE);
 			ObjectInput input = new ObjectInputStream(is);
 			try {
 				// deserialize the List
-				atcCodesMap = (HashMap<java.lang.String,at.medevit.atc_codes.ATCCode>) input.readObject();
+				atcCodesMap =
+					(HashMap<java.lang.String, at.medevit.atc_codes.ATCCode>) input.readObject();
 			} finally {
 				input.close();
 			}
