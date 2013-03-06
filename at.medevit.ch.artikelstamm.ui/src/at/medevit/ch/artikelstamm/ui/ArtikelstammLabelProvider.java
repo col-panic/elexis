@@ -32,7 +32,7 @@ public class ArtikelstammLabelProvider extends LabelProvider {
 		if (item.isInSLList()) {
 			sb.append("*"); // * zeigt kassenpflicht eines medikaments an muss ggf. erweitert werden
 		}
-		if (item.getDeductible() != null) {
+		if (item.getDeductible() > 0) {
 			sb.append("[" + item.getDeductible() + "%] ");
 		}
 		

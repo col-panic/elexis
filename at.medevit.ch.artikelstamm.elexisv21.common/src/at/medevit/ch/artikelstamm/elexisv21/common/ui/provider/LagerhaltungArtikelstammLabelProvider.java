@@ -64,6 +64,9 @@ public class LagerhaltungArtikelstammLabelProvider extends ArtikelstammLabelProv
 	
 	@Override
 	public Color getBackground(Object element, int columnIndex){
+		ArtikelstammItem ai = (ArtikelstammItem) element;
+		if (ai.isBlackBoxed())
+			return Desk.getColor(Desk.COL_GREY60);
 		return null;
 	}
 	

@@ -270,8 +270,13 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	// -- VERRECHENBAR ADAPTER ---
 	@Override
 	public VatInfo getVatInfo(){
-		// TODO
-		return null;
+		switch (getType()) {
+		case P:
+			return VatInfo.VAT_CH_ISMEDICAMENT;
+		case N:
+			return VatInfo.VAT_CH_NOTMEDICAMENT;
+		}
+		return VatInfo.VAT_NONE;
 	}
 	
 	@Override
@@ -372,6 +377,13 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		return true;
 	}
 	
+	public boolean isBlackBoxed(){
+		String val = get(FLD_BLACKBOXED);
+		if (val.equals(StringConstants.ONE))
+			return true;
+		return false;
+	}
+	
 	// requirements for IArtikelstammItem
 	@Override
 	public String getDSCR(){
@@ -447,12 +459,14 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	
 	@Override
 	public Integer getDeductible(){
-		if (get(FLD_DEDUCTIBLE) == null)
-			return null;
+		// Medikament wenn SL nicht 20 % dann 10 %
+		String val = get(FLD_DEDUCTIBLE).trim();
+		if (val == null || val.length() < 1)
+			return 0;
 		try {
-			return new Integer(get(FLD_DEDUCTIBLE).trim());
+			return new Integer(val);
 		} catch (NumberFormatException nfe) {
-			return null;
+			return 0;
 		}
 	}
 	
