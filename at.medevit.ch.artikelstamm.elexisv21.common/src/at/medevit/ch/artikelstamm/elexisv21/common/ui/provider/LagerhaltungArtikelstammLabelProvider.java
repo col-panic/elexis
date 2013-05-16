@@ -13,6 +13,8 @@ package at.medevit.ch.artikelstamm.elexisv21.common.ui.provider;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.wb.swt.ResourceManager;
 
 import at.medevit.ch.artikelstamm.ui.ArtikelstammLabelProvider;
 import ch.artikelstamm.elexisv21.common.ArtikelstammItem;
@@ -26,6 +28,9 @@ import ch.elexis.preferences.PreferenceConstants;
  */
 public class LagerhaltungArtikelstammLabelProvider extends ArtikelstammLabelProvider implements
 		ITableColorProvider {
+	
+	private Image blackBoxedImage = ResourceManager.getPluginImage("at.medevit.ch.artikelstamm.ui",
+		"/rsc/icons/flag-black.png");
 	
 	/**
 	 * Lagerartikel are shown in blue, articles that should be ordered are shown in red
@@ -68,6 +73,14 @@ public class LagerhaltungArtikelstammLabelProvider extends ArtikelstammLabelProv
 		if (ai.isBlackBoxed())
 			return Desk.getColor(Desk.COL_GREY60);
 		return null;
+	}
+	
+	@Override
+	public Image getImage(Object element){
+		ArtikelstammItem ai = (ArtikelstammItem) element;
+		if (ai.isBlackBoxed())
+			return blackBoxedImage;
+		return super.getImage(element);
 	}
 	
 }

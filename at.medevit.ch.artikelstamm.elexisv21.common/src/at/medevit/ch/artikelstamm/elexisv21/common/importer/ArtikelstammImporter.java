@@ -53,9 +53,12 @@ public class ArtikelstammImporter extends ImporterPage {
 	
 	@Override
 	public IStatus doImport(IProgressMonitor monitor) throws Exception{
-		monitor.beginTask("Aktualisierung des Artikelstamms", 7);
-		
 		File file = new File(results[0]);
+		return performFileImport(file, monitor);
+	}
+	
+	public IStatus performFileImport(File file, IProgressMonitor monitor){
+		monitor.beginTask("Aktualisierung des Artikelstamms", 7);
 		monitor.subTask("Einlesen der Aktualisierungsdaten");
 		ARTIKELSTAMM importStamm = null;
 		try {
@@ -106,7 +109,6 @@ public class ArtikelstammImporter extends ImporterPage {
 		monitor.subTask("Setze neue Versionsnummer");
 		ArtikelstammItem.setCumulatedVersion(importStammType, importStammVersion);
 		monitor.worked(1);
-		
 		monitor.done();
 		
 		ElexisEventDispatcher.reload(ArtikelstammItem.class);

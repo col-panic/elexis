@@ -48,6 +48,9 @@ public class ArtikelstammCodeSelectorFactory extends CodeSelectorFactory {
 					Typ.STRING, null)
 			};
 		slp = new SelectorPanelProvider(fields, true);
+		
+		populateSelectorPanel(slp, fdl);
+		
 		SimpleWidgetProvider swp =
 			new SimpleWidgetProvider(SimpleWidgetProvider.TYPE_LAZYLIST, SWT.NONE, null);
 		
@@ -87,5 +90,12 @@ public class ArtikelstammCodeSelectorFactory extends CodeSelectorFactory {
 			qbe.add("ID", Query.NOT_EQUAL, "VERSION");
 		}
 	}
+	
+	/**
+	 * Overwrite to add actions to the selector panel
+	 * 
+	 * @param slp2
+	 */
+	public void populateSelectorPanel(SelectorPanelProvider slp, FlatDataLoader fdl){}
 	
 }
