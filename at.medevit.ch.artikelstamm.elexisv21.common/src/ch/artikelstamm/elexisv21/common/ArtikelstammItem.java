@@ -336,6 +336,10 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		return get(FLD_GTIN);
 	}
 	
+	/**
+	 * @param stammType
+	 * @return The version of the resp {@link TYPE}, or 99999 if not found
+	 */
 	public static int getCumulatedVersion(TYPE stammType){
 		ArtikelstammItem version = load("VERSION");
 		switch (stammType) {
@@ -377,11 +381,26 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		return true;
 	}
 	
+	/**
+	 * The article is marked as black-boxed if the value within {@link #FLD_BLACKBOXED} does not
+	 * equal 0
+	 * 
+	 * @return
+	 */
 	public boolean isBlackBoxed(){
 		String val = get(FLD_BLACKBOXED);
-		if (val.equals(StringConstants.ONE))
+		if (!val.equals(StringConstants.ZERO))
 			return true;
 		return false;
+	}
+	
+	/**
+	 * 
+	 * @return {@link BlackBoxReason} or <code>null</code> if invalid value
+	 */
+	public BlackBoxReason getBlackBoxReason(){
+		int value = Integer.parseInt(get(FLD_BLACKBOXED));
+		return BlackBoxReason.getByInteger(value);
 	}
 	
 	// requirements for IArtikelstammItem

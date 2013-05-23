@@ -38,6 +38,7 @@ public class ArtikelstammHelper {
 	private static SchemaFactory schemaFactory = SchemaFactory
 		.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	static DateFormat dateFormat = new SimpleDateFormat("ddMMyy");
+	public static DateFormat monthAndYearWritten = new SimpleDateFormat("MMM yyyy");
 	
 	/**
 	 * 

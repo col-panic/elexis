@@ -34,6 +34,7 @@ import at.medevit.ch.artikelstamm.ArtikelstammConstants;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
 import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 import ch.artikelstamm.elexisv21.common.ArtikelstammItem;
+import ch.artikelstamm.elexisv21.common.BlackBoxReason;
 import ch.elexis.StringConstants;
 import ch.elexis.actions.ElexisEventDispatcher;
 import ch.elexis.data.PersistentObject;
@@ -102,8 +103,8 @@ public class ArtikelstammImporter extends ImporterPage {
 		removeAllNonBlackboxedWithVersion(importStammType, currentStammVersion, monitor);
 		monitor.worked(1);
 		// import the new dataset for type importStammType
-		monitor.subTask("Importiere Datensatz " + importStamm.getMONTH() + "/"
-			+ importStamm.getYEAR());
+		monitor.subTask("Importiere Datensatz " + importStamm.getTYPE() + " "
+			+ importStamm.getMONTH() + "/" + importStamm.getYEAR());
 		importNewItemsIntoDatabase(importStammType, importStamm, monitor);
 		// update the version number for type importStammType
 		monitor.subTask("Setze neue Versionsnummer");
@@ -158,7 +159,8 @@ public class ArtikelstammImporter extends ImporterPage {
 			if (p.getArtikel() instanceof ArtikelstammItem) {
 				ArtikelstammItem ai = (ArtikelstammItem) p.getArtikel();
 				if (ai.get(ArtikelstammItem.FLD_ITEM_TYPE).equalsIgnoreCase(importStammType.name()))
-					ai.set(ArtikelstammItem.FLD_BLACKBOXED, StringConstants.ONE);
+					ai.set(ArtikelstammItem.FLD_BLACKBOXED,
+						BlackBoxReason.IS_REFERENCED_IN_FIXMEDICATION.getNumericalReasonString());
 			}
 			subMonitor.worked(1);
 		}
@@ -175,7 +177,8 @@ public class ArtikelstammImporter extends ImporterPage {
 					.equals(ArtikelstammConstants.CODESYSTEM_NAME)) {
 				ArtikelstammItem ai = ArtikelstammItem.load(vr.getVerrechenbar().getId());
 				if (ai.get(ArtikelstammItem.FLD_ITEM_TYPE).equalsIgnoreCase(importStammType.name()))
-					ai.set(ArtikelstammItem.FLD_BLACKBOXED, StringConstants.ONE);
+					ai.set(ArtikelstammItem.FLD_BLACKBOXED,
+						BlackBoxReason.IS_REFERENCED_IN_CONSULTATION.getNumericalReasonString());
 			}
 			subMonitor2.worked(1);
 		}
@@ -190,7 +193,8 @@ public class ArtikelstammImporter extends ImporterPage {
 		for (ArtikelstammItem ai : resultLagerartikel) {
 			if (ai.get(ArtikelstammItem.FLD_ITEM_TYPE).equalsIgnoreCase(importStammType.name()))
 				if (ai.isLagerartikel())
-					ai.set(ArtikelstammItem.FLD_BLACKBOXED, StringConstants.ONE);
+					ai.set(ArtikelstammItem.FLD_BLACKBOXED,
+						BlackBoxReason.IS_ON_STOCK.getNumericalReasonString());
 			subMonitor3.worked(1);
 		}
 		subMonitor3.done();
@@ -208,7 +212,7 @@ public class ArtikelstammImporter extends ImporterPage {
 		IProgressMonitor monitor){
 		Query<ArtikelstammItem> qbe = new Query<ArtikelstammItem>(ArtikelstammItem.class);
 		
-		qbe.add(ArtikelstammItem.FLD_BLACKBOXED, Query.NOT_EQUAL, StringConstants.ONE);
+		qbe.add(ArtikelstammItem.FLD_BLACKBOXED, Query.EQUALS, StringConstants.ZERO);
 		qbe.add(ArtikelstammItem.FLD_ITEM_TYPE, Query.EQUALS, importStammType.name());
 		qbe.add(ArtikelstammItem.FLD_CUMMULATED_VERSION, Query.LESS_OR_EQUAL, currentStammVersion
 			+ "");

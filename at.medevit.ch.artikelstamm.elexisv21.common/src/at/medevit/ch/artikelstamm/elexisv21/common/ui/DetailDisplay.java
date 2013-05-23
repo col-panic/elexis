@@ -32,8 +32,11 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PlatformUI;
 
 import at.medevit.ch.artikelstamm.ArtikelstammConstants;
+import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
+import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 import at.medevit.ch.artikelstamm.ui.DetailComposite;
 import ch.artikelstamm.elexisv21.common.ArtikelstammItem;
+import ch.artikelstamm.elexisv21.common.BlackBoxReason;
 import ch.elexis.Desk;
 import ch.elexis.actions.ElexisEventDispatcher;
 import ch.elexis.data.Kontakt;
@@ -49,7 +52,7 @@ public class DetailDisplay implements IDetailDisplay {
 	private UpdateValueStrategy stringToInteger = new UpdateValueStrategy()
 		.setConverter(StringToNumberConverter.toInteger(true));
 	
-	private WritableValue item = new WritableValue(null, ArtikelstammItem.class);
+	protected WritableValue item = new WritableValue(null, ArtikelstammItem.class);
 	
 	private DetailComposite dc = null;
 	private Text txtLIEFERANT;
@@ -79,8 +82,36 @@ public class DetailDisplay implements IDetailDisplay {
 			dc = new DetailComposite(parent, SWT.None);
 			
 			addLagerhaltungGroupToComposite(dc);
+			addAdditionalInformation(dc);
+			addDataSetStateLabelToComposite(dc);
 		}
 		return dc;
+	}
+	
+	public void addAdditionalInformation(DetailComposite dc){
+		// Overwritten by subclasses
+	}
+	
+	private void addDataSetStateLabelToComposite(DetailComposite dc){
+		Label label = new Label(dc, SWT.NONE);
+		label.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false, 1, 1));
+		StringBuilder sb = new StringBuilder();
+		int pharma = ArtikelstammItem.getCumulatedVersion(TYPE.P);
+		if (pharma != 99999)
+			sb.append("Pharma "
+				+ ArtikelstammHelper.monthAndYearWritten.format(ArtikelstammHelper
+					.getDateFromCumulatedVersionNumber(pharma)) + " (" + pharma + ")");
+		
+		int nonPharma = ArtikelstammItem.getCumulatedVersion(TYPE.N);
+		if (nonPharma != 99999 && pharma != 99999)
+			sb.append(", ");
+		if (nonPharma != 99999)
+			sb.append("Non-Pharma "
+				+ ArtikelstammHelper.monthAndYearWritten.format(ArtikelstammHelper
+					.getDateFromCumulatedVersionNumber(nonPharma)) + " (" + nonPharma + ")");
+		
+		label.setText("Datensatz-Basis: " + sb.toString());
+		
 	}
 	
 	/**
