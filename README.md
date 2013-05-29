@@ -16,4 +16,5 @@ at.medevit.ch.artikelstamm.ui | Artikelstamm CH UI Klassen
 at.medevit.stammdaten.converter | Datensatz Konverter: Swissindex + BAG -> Artikelstamm
 at.medevit.swissindex.client | Swissindex WebService Download Client
 net.e-mediat.bag | BAG Datensatz Model-Klassen und Parser
+net.e-mediat.igm | IGM Datensatz Library
 net.swissindex.format | Swissindex Model-Klassen und Parser
