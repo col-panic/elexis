@@ -1,0 +1,21 @@
+h1. E-Mediat IGM Format Parser Library
+
+__Copyright 2013, MEDEVIT <office@medevit.at>__ 
+
+*Support für die Verarbeitung der IGM Publikationsdaten*  
+
+Diese Library bietet Support für das Parsen des IGM Formates. Große Teile der Library sind nicht abgeschlossen,
+derzeit werden folgende Funktionen unterstützt:
+
+
+|_. RecordType |_. Lesen |_. Schreiben |
+| 01 - Stamm-Satz ohne MWSt Code | Nein | Nein |
+| 02 - UpdateSatz Preis ohne MWSt Code | Nein | Nein |
+| 10 - UpdateSatz Preis und MWSt Code | Nein | Nein |
+| 11 - Stamm-Satz mit MWSt Code | Ja | Nein  |
+| 20 - Update-Satz ohne MWSt Code und Ap-Preis | Nein | Nein |
+| 21 - Stamm-Satz mit MWSt Code und Apo-Preis | Nein | Nein |
+
+h2. Sponsor
+
+Die Entwicklung dieser Library wurde bis zur benötigten Funktionalität gesponsert durch die MEDELEXIS AG. Sollten Sie Interesse an einer Weiterentwicklung haben, nehmen Sie bitte Kontakt auf.
