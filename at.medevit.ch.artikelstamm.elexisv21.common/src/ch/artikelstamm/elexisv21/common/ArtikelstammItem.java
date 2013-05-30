@@ -63,7 +63,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	/** Abgabekategorie */ 		public static final String FLD_IKSCAT = "IKSCAT";
 	/** Limitation ja/nein */ 	public static final String FLD_LIMITATION = "LIMITATION";
 	/** Limitationspunkte */ 	public static final String FLD_LIMITATION_PTS = "LIMITIATION_PTS";
-	/** Limitationstext */ 		public static final String FLD_LIMITATION_TEXT = "LIMITATION_TEXT";
+	/** Limitationstext */ 		public static final String FLD_LIMITATION_TEXT = "LIMITATION_TXT";
 	/** Generiktyp O/G */ 		public static final String FLD_GENERIC_TYPE = "GENERIC_TYPE";
 	/** Generikum verfügbar */ 	public static final String FLD_HAS_GENERIC = "HAS_GENERIC";
 	/** LPPV Eintrag ja/nein */	public static final String FLD_LPPV = "LPPV";
@@ -79,13 +79,13 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 			+ "ID VARCHAR(25) primary key," // has to be of type varchar else version.exists fails
 			+ "lastupdate BIGINT,"
 			+ "deleted CHAR(1) default '0'," // will never be set to 1
-			+ FLD_ITEM_TYPE + " CHAR(1),"
-			+ FLD_BLACKBOXED + " CHAR(1),"
+			+ FLD_ITEM_TYPE + " CHAR(1)," // id(VERSION) DataQuality of last import P
+			+ FLD_BLACKBOXED + " CHAR(1),"// id(VERSION) DataQuality of last import N
 			+ FLD_CUMMULATED_VERSION + " CHAR(4),"
 			+ FLD_GTIN + " VARCHAR(14)," // id(VERSION) contains table version, has to be varchar else vi.isolder() fails
 			+ FLD_PHAR 	+" CHAR(7),"
-			+ FLD_DSCR	+" VARCHAR(50)," // id(VERSION) contains table creation date
-			+ FLD_ADDDSCR	+" VARCHAR(50),"
+			+ FLD_DSCR	+" VARCHAR(50)," // id(VERSION) filename of last P import
+			+ FLD_ADDDSCR	+" VARCHAR(50)," // id(VERSION) filename of last N import
 			+ FLD_ATC +" CHAR(10),"
 			+ FLD_COMP_GLN + " CHAR(13),"
 			+ FLD_COMP_NAME + " VARCHAR(255),"
@@ -96,13 +96,13 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 			+ FLD_IKSCAT + " CHAR(1),"
 			+ FLD_LIMITATION + " CHAR(1),"
 			+ FLD_LIMITATION_PTS+ " CHAR(4),"
-			+ FLD_LIMITATION_TEXT + " VARCHAR(256),"
+			+ FLD_LIMITATION_TEXT + " TEXT,"
 			+ FLD_GENERIC_TYPE + " CHAR(1),"
 			+ FLD_HAS_GENERIC + " CHAR(1),"
 			+ FLD_LPPV + " CHAR(1),"
 			+ FLD_DEDUCTIBLE + " CHAR(6),"
 			+ FLD_NARCOTIC + " CHAR(1),"
-			+ FLD_NARCOTIC_CAS + " VARCHAR(20),"
+			+ FLD_NARCOTIC_CAS + " VARCHAR(20)," // id(VERSION) contains table creation date
 			+ FLD_VACCINE + " CHAR(1),"
 			+ FLD_LIEFERANT_ID +" VARCHAR(25),"
 			+ MAXBESTAND + " VARCHAR(4),"
@@ -116,7 +116,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 			+ "CREATE INDEX idxGTIN ON "+ TABLENAME + " ("+FLD_GTIN+"); "
 			+ "CREATE INDEX idxMONTH ON "+ TABLENAME + " ("+FLD_CUMMULATED_VERSION+"); "
 			+ "CREATE INDEX idxBB ON "+ TABLENAME + " ("+FLD_BLACKBOXED+"); "
-			+ "INSERT INTO " + TABLENAME + " (ID,"+FLD_GTIN+","+FLD_DSCR+","+FLD_PEXF+","+FLD_PPUB+") VALUES ('VERSION',"
+			+ "INSERT INTO " + TABLENAME + " (ID,"+FLD_GTIN+","+FLD_NARCOTIC_CAS+","+FLD_PEXF+","+FLD_PPUB+") VALUES ('VERSION',"
 			+ JdbcLink.wrap(VERSION) +","+JdbcLink.wrap(df.format(new Date()))+",0,0);";
 		//@formatter:on
 	
@@ -340,7 +340,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	 * @param stammType
 	 * @return The version of the resp {@link TYPE}, or 99999 if not found
 	 */
-	public static int getCumulatedVersion(TYPE stammType){
+	public static int getImportSetCumulatedVersion(TYPE stammType){
 		ArtikelstammItem version = load("VERSION");
 		switch (stammType) {
 		case N:
@@ -351,7 +351,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		return 99999;
 	}
 	
-	public static void setCumulatedVersion(TYPE stammType, int importStammVersion){
+	public static void setImportSetCumulatedVersion(TYPE stammType, int importStammVersion){
 		ArtikelstammItem version = load("VERSION");
 		switch (stammType) {
 		case N:
@@ -360,6 +360,65 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		case P:
 			version.setInt(FLD_PPUB, importStammVersion);
 			return;
+		}
+	}
+	
+	public static void setImportSetDataQuality(TYPE p, int dq){
+		ArtikelstammItem version = load("VERSION");
+		switch (p) {
+		case N:
+			version.setInt(FLD_BLACKBOXED, dq);
+			return;
+		case P:
+			version.setInt(FLD_ITEM_TYPE, dq);
+			return;
+		}
+	}
+	
+	public static int getImportSetDataQuality(TYPE p){
+		ArtikelstammItem version = load("VERSION");
+		switch (p) {
+		case N:
+			return version.getInt(FLD_BLACKBOXED);
+		case P:
+			return version.getInt(FLD_ITEM_TYPE);
+		default:
+			return 0;
+		}
+	}
+	
+	/**
+	 * Stores the filename of the last import source file
+	 * 
+	 * @param stammType
+	 * @param importFilename
+	 */
+	public static void setImportSetLastImportFileName(TYPE stammType, String importFilename){
+		ArtikelstammItem version = load("VERSION");
+		switch (stammType) {
+		case N:
+			version.set(FLD_ADDDSCR, importFilename);
+			return;
+		case P:
+			version.set(FLD_DSCR, importFilename);
+			return;
+		}
+	}
+	
+	/**
+	 * Retrieves the filename of the last import source file
+	 * 
+	 * @param stammType
+	 */
+	public static String getImportSetLastImportFileName(TYPE stammType){
+		ArtikelstammItem version = load("VERSION");
+		switch (stammType) {
+		case N:
+			return version.get(FLD_ADDDSCR);
+		case P:
+			return version.get(FLD_DSCR);
+		default:
+			return "";
 		}
 	}
 	
@@ -492,6 +551,26 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	@Override
 	public boolean isNarcotic(){
 		return (get(FLD_NARCOTIC).equals(StringConstants.ONE)) ? true : false;
+	}
+	
+	@Override
+	public boolean isLimited(){
+		return (get(FLD_LIMITATION).equals(StringConstants.ONE)) ? true : false;
+	}
+	
+	@Override
+	public String getLimitationPoints(){
+		return get(FLD_LIMITATION_PTS);
+	}
+	
+	@Override
+	public String getLimitationText(){
+		return get(FLD_LIMITATION_TEXT);
+	}
+	
+	@Override
+	public boolean isInLPPV(){
+		return (get(FLD_LPPV).equals(StringConstants.ONE)) ? true : false;
 	}
 	
 }

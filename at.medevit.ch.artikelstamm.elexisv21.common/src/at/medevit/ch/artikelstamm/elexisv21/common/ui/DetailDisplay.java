@@ -36,7 +36,6 @@ import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
 import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 import at.medevit.ch.artikelstamm.ui.DetailComposite;
 import ch.artikelstamm.elexisv21.common.ArtikelstammItem;
-import ch.artikelstamm.elexisv21.common.BlackBoxReason;
 import ch.elexis.Desk;
 import ch.elexis.actions.ElexisEventDispatcher;
 import ch.elexis.data.Kontakt;
@@ -96,22 +95,39 @@ public class DetailDisplay implements IDetailDisplay {
 		Label label = new Label(dc, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false, 1, 1));
 		StringBuilder sb = new StringBuilder();
-		int pharma = ArtikelstammItem.getCumulatedVersion(TYPE.P);
+		int pharma = ArtikelstammItem.getImportSetCumulatedVersion(TYPE.P);
 		if (pharma != 99999)
 			sb.append("Pharma "
+				+ dataQualityToString(ArtikelstammItem.getImportSetDataQuality(TYPE.P))
+				+ " "
 				+ ArtikelstammHelper.monthAndYearWritten.format(ArtikelstammHelper
 					.getDateFromCumulatedVersionNumber(pharma)) + " (" + pharma + ")");
 		
-		int nonPharma = ArtikelstammItem.getCumulatedVersion(TYPE.N);
+		int nonPharma = ArtikelstammItem.getImportSetCumulatedVersion(TYPE.N);
 		if (nonPharma != 99999 && pharma != 99999)
 			sb.append(", ");
 		if (nonPharma != 99999)
 			sb.append("Non-Pharma "
+				+ dataQualityToString(ArtikelstammItem.getImportSetDataQuality(TYPE.N))
+				+ " "
 				+ ArtikelstammHelper.monthAndYearWritten.format(ArtikelstammHelper
 					.getDateFromCumulatedVersionNumber(nonPharma)) + " (" + nonPharma + ")");
 		
 		label.setText("Datensatz-Basis: " + sb.toString());
 		
+	}
+	
+	private String dataQualityToString(int dq){
+		switch (dq) {
+		case 1:
+			return "v1";
+		case 2:
+			return "v1b";
+		case 3:
+			return "v2";
+		default:
+			return "unknown";
+		}
 	}
 	
 	/**

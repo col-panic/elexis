@@ -81,7 +81,7 @@ public class ArtikelstammImporter extends ImporterPage {
 		// the type of import articles in the file (PHARMA or NONPHARMA)
 		TYPE importStammType = ArtikelstammConstants.TYPE.valueOf(importStamm.getTYPE());
 		// the current version stored in the database for importStammType
-		int currentStammVersion = ArtikelstammItem.getCumulatedVersion(importStammType);
+		int currentStammVersion = ArtikelstammItem.getImportSetCumulatedVersion(importStammType);
 		
 		// only continue if the dataset to be imported for importStammType is newer than
 		// the current
@@ -108,7 +108,8 @@ public class ArtikelstammImporter extends ImporterPage {
 		importNewItemsIntoDatabase(importStammType, importStamm, monitor);
 		// update the version number for type importStammType
 		monitor.subTask("Setze neue Versionsnummer");
-		ArtikelstammItem.setCumulatedVersion(importStammType, importStammVersion);
+		ArtikelstammItem.setImportSetCumulatedVersion(importStammType, importStammVersion);
+		ArtikelstammItem.setImportSetDataQuality(importStammType, importStamm.getDATAQUALITY());
 		monitor.worked(1);
 		monitor.done();
 		
@@ -275,7 +276,16 @@ public class ArtikelstammImporter extends ImporterPage {
 				ai.set(ArtikelstammItem.FLD_IKSCAT, item.getIKSCAT());
 			if (item.isNARCOTIC() != null && item.isNARCOTIC())
 				ai.set(ArtikelstammItem.FLD_NARCOTIC, StringConstants.ONE);
-			// TODO set all the values
+			if (item.isLPPV() != null && item.isLPPV())
+				ai.set(ArtikelstammItem.FLD_LPPV, StringConstants.ONE);
+			if (item.isLIMITATION() != null && item.isLIMITATION())
+				ai.set(ArtikelstammItem.FLD_LIMITATION, StringConstants.ONE);
+			if (item.getLIMITATIONPTS() != null)
+				ai.set(ArtikelstammItem.FLD_LIMITATION_PTS, item.getLIMITATIONPTS().toString());
+			if (item.getLIMITATIONTEXT() != null)
+				ai.set(ArtikelstammItem.FLD_LIMITATION_TEXT, item.getLIMITATIONTEXT());
+			if (item.getPKGSIZE() != null)
+				ai.set(ArtikelstammItem.FLD_PKG_SIZE, item.getPKGSIZE().toString());
 			
 			subMonitor.worked(1);
 		}
@@ -302,8 +312,8 @@ public class ArtikelstammImporter extends ImporterPage {
 		lblVersion.setText("Aktuelle Versionen:");
 		Label lblVERSION = new Label(versionInfo, SWT.None);
 		lblVERSION.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		int pharmaCumulV = ArtikelstammItem.getCumulatedVersion(TYPE.P);
-		int nonPharmaCumulV = ArtikelstammItem.getCumulatedVersion(TYPE.N);
+		int pharmaCumulV = ArtikelstammItem.getImportSetCumulatedVersion(TYPE.P);
+		int nonPharmaCumulV = ArtikelstammItem.getImportSetCumulatedVersion(TYPE.N);
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/yyyy");
 		
