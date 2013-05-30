@@ -4,7 +4,7 @@
    <extension
          point="ch.elexis.Verrechnungscode">
       <Artikel
-            CodeDetailDisplay="at.medevit.ch.artikelstamm.elexisv21.common.ui.DetailDisplay"
+            CodeDetailDisplay="at.medevit.ch.artikelstamm.elexisv21.open.ui.OpenArtikelstammDetailDisplay"
             CodeSelectorFactory="at.medevit.ch.artikelstamm.elexisv21.common.ui.ArtikelstammCodeSelectorFactory"
             ElementFactory="ch.artikelstamm.elexisv21.common.ArtikelstammPOFactory"
             ImporterClass="at.medevit.ch.artikelstamm.elexisv21.common.importer.ArtikelstammImporter"
