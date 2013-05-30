@@ -33,7 +33,7 @@ import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEM;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
 
 public class ArtikelstammHelper {
-	public static String PHARMA_XSD_LOCATION = "/lib/Elexis_Artikelstamm_v001.xsd";
+	public static String PHARMA_XSD_LOCATION = "Elexis_Artikelstamm_v001.xsd";
 	
 	private static SchemaFactory schemaFactory = SchemaFactory
 		.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -172,30 +172,20 @@ public class ArtikelstammHelper {
 	 * not be re-initialized!
 	 * 
 	 * @param artikelstamm
-	 * @param swissMedicNo8
+	 * @param gtin
 	 * @return
 	 */
-	public static ITEM getItemInListByGTIN(ARTIKELSTAMM artikelstamm, String swissMedicNo8){
-		if (swissMedicNo8 == null || swissMedicNo8.length() != 8)
-			return null;
+	public static ITEM getItemInListByGTIN(ARTIKELSTAMM artikelstamm, String gtin){
 		if (itemGTINCache == null) {
-			if (artikelstamm.getTYPE().equals(ArtikelstammConstants.TYPE.N))
-				throw new IllegalArgumentException("Trying to enrich Non-Pharma artikelstamm data");
-			
 			itemGTINCache = new HashMap<String, ITEM>(artikelstamm.getITEM().size());
 			for (ITEM item : artikelstamm.getITEM()) {
-				if (item.getGTIN().length() < 13)
-					continue;
-				itemGTINCache.put(item.getGTIN().substring(0, 12), item);
+				itemGTINCache.put(item.getGTIN(), item);
 			}
 		}
-		
-		String key = "7680" + swissMedicNo8;
-		if (itemGTINCache.containsKey(key.substring(0, 12))) {
-			System.out.println("[INFO] Resolved over GTIN " + key);
-			return itemGTINCache.get(key.substring(0, 12));
+		if (itemGTINCache.containsKey(gtin)) {
+			System.out.println("[INFO] Resolved over GTIN " + gtin);
+			return itemGTINCache.get(gtin);
 		}
-		
 		return null;
 	}
 	
