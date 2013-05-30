@@ -55,6 +55,13 @@ public class DetailComposite extends Composite {
 		.setConverter(NumberToStringConverter.fromDouble(false));
 	private UpdateValueStrategy integerToString = new UpdateValueStrategy()
 		.setConverter(NumberToStringConverter.fromInteger(true));
+	private Button btnLPPVEntry;
+	private Button btnlLimitation;
+	private Label lblLIMITATION;
+	private Label lblLimitationspunkte;
+	private Label lblLIMITATIONPOINTS;
+	private Label lblLimitationstext;
+	private Label lblLIMITATIONTEXT;
 	
 	public DetailComposite(Composite parent, int style){
 		super(parent, style);
@@ -132,10 +139,39 @@ public class DetailComposite extends Composite {
 		Group grpMarker = new Group(this, SWT.None);
 		grpMarker.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
 		grpMarker.setText("Marker");
-		grpMarker.setLayout(new GridLayout(1, false));
+		grpMarker.setLayout(new GridLayout(2, false));
 		
 		btnCheckIsNarcotic = new Button(grpMarker, SWT.CHECK);
 		btnCheckIsNarcotic.setText("Betäubungsmittel");
+		
+		btnLPPVEntry = new Button(grpMarker, SWT.CHECK);
+		btnLPPVEntry
+			.setToolTipText("Artikel wird in Liste pharmazeutischer Präparate mit spezieller Verwendung (LPPV) geführt");
+		btnLPPVEntry.setText("LPPV Eintrag");
+		
+		Group grpLimitations = new Group(this, SWT.None);
+		grpLimitations.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+		grpLimitations.setText("Einschränkungen");
+		grpLimitations.setLayout(new GridLayout(2, false));
+		
+		btnlLimitation = new Button(grpLimitations, SWT.CHECK);
+		btnlLimitation.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
+		btnlLimitation.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.BOLD));
+		btnlLimitation.setText("Limitation");
+		
+		lblLimitationspunkte = new Label(grpLimitations, SWT.NONE);
+		lblLimitationspunkte.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.BOLD));
+		lblLimitationspunkte.setText("Limitationspunkte");
+		
+		lblLIMITATIONPOINTS = new Label(grpLimitations, SWT.NONE);
+		lblLIMITATIONPOINTS.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		lblLimitationstext = new Label(grpLimitations, SWT.NONE);
+		lblLimitationstext.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.BOLD));
+		lblLimitationstext.setText("Limitationstext");
+		
+		lblLIMITATIONTEXT = new Label(grpLimitations, SWT.WRAP);
+		lblLIMITATIONTEXT.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Group grpHersteller = new Group(this, SWT.NONE);
 		grpHersteller.setLayout(new GridLayout(1, false));
@@ -202,7 +238,6 @@ public class DetailComposite extends Composite {
 		bindingContext.bindValue(observeTextLblPHZNRObserveWidget, itemPHARObserveDetailValue,
 			new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
 		//
-		
 		IObservableValue observeTextLblHERSTELLERObserveWidget =
 			WidgetProperties.text().observe(lblHERSTELLER);
 		IObservableValue itemManufacturerLabelObserveDetailValue =
@@ -211,14 +246,13 @@ public class DetailComposite extends Composite {
 		bindingContext.bindValue(observeTextLblHERSTELLERObserveWidget,
 			itemManufacturerLabelObserveDetailValue, null, null);
 		//
-		
 		IObservableValue observeTextLblEXFACTORYPRICEObserveWidget =
 			WidgetProperties.text().observe(lblEXFACTORYPRICE);
 		IObservableValue itemExFactoryPriceObserveDetailValue =
 			PojoProperties.value(IArtikelstammItem.class, "exFactoryPrice", double.class)
 				.observeDetail(item);
 		bindingContext.bindValue(observeTextLblEXFACTORYPRICEObserveWidget,
-			itemExFactoryPriceObserveDetailValue, null, doubleToString);
+			itemExFactoryPriceObserveDetailValue, null, null);
 		//
 		IObservableValue observeTextLblPUBLICPRICEObserveWidget =
 			WidgetProperties.text().observe(lblPUBLICPRICE);
@@ -226,7 +260,7 @@ public class DetailComposite extends Composite {
 			PojoProperties.value(IArtikelstammItem.class, "publicPrice", double.class)
 				.observeDetail(item);
 		bindingContext.bindValue(observeTextLblPUBLICPRICEObserveWidget,
-			itemPublicPriceObserveDetailValue, null, doubleToString);
+			itemPublicPriceObserveDetailValue, null, null);
 		//
 		IObservableValue observeTextLblABGABEKATEGORIEObserveWidget =
 			WidgetProperties.text().observe(lblABGABEKATEGORIE);
@@ -242,7 +276,7 @@ public class DetailComposite extends Composite {
 			PojoProperties.value(IArtikelstammItem.class, "deductible", int.class).observeDetail(
 				item);
 		bindingContext.bindValue(observeTextLblSELBSTBEHALTObserveWidget,
-			itemDeductibleObserveDetailValue, null, integerToString);
+			itemDeductibleObserveDetailValue, null, null);
 		//
 		IObservableValue observeSelectionBtnCheckIsNarcoticObserveWidget =
 			WidgetProperties.selection().observe(btnCheckIsNarcotic);
@@ -251,6 +285,38 @@ public class DetailComposite extends Composite {
 				item);
 		bindingContext.bindValue(observeSelectionBtnCheckIsNarcoticObserveWidget,
 			itemNarcoticObserveDetailValue, null, null);
+		//
+		IObservableValue observeTextLblLIMITATIONTEXTObserveWidget =
+			WidgetProperties.text().observe(lblLIMITATIONTEXT);
+		IObservableValue itemLimitationTextObserveDetailValue =
+			PojoProperties.value(IArtikelstammItem.class, "limitationText", String.class)
+				.observeDetail(item);
+		bindingContext.bindValue(observeTextLblLIMITATIONTEXTObserveWidget,
+			itemLimitationTextObserveDetailValue, null, null);
+		//
+		IObservableValue observeTextLblLIMITATIONPOINTSObserveWidget =
+			WidgetProperties.text().observe(lblLIMITATIONPOINTS);
+		IObservableValue itemLimitationPointsObserveDetailValue =
+			PojoProperties.value(IArtikelstammItem.class, "limitationPoints", String.class)
+				.observeDetail(item);
+		bindingContext.bindValue(observeTextLblLIMITATIONPOINTSObserveWidget,
+			itemLimitationPointsObserveDetailValue, null, null);
+		//
+		IObservableValue observeSelectionBtnLPPVEntryObserveWidget =
+			WidgetProperties.selection().observe(btnLPPVEntry);
+		IObservableValue itemInLPPVObserveDetailValue =
+			PojoProperties.value(IArtikelstammItem.class, "inLPPV", boolean.class).observeDetail(
+				item);
+		bindingContext.bindValue(observeSelectionBtnLPPVEntryObserveWidget,
+			itemInLPPVObserveDetailValue, null, null);
+		//
+		IObservableValue observeSelectionBtnlLimitationObserveWidget =
+			WidgetProperties.selection().observe(btnlLimitation);
+		IObservableValue itemLimitedObserveDetailValue =
+			PojoProperties.value(IArtikelstammItem.class, "limited", boolean.class).observeDetail(
+				item);
+		bindingContext.bindValue(observeSelectionBtnlLimitationObserveWidget,
+			itemLimitedObserveDetailValue, null, null);
 		//
 		return bindingContext;
 	}

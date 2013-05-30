@@ -86,4 +86,27 @@ public interface IArtikelstammItem {
 	 */
 	public boolean isNarcotic();
 	
+	/**
+	 * @return <code>true</code> if article is in LPPV list
+	 */
+	public boolean isInLPPV();
+	
+	/**
+	 * 
+	 * @return is this article limited?
+	 */
+	public boolean isLimited();
+	
+	/**
+	 * 
+	 * @return the number of limitation points
+	 */
+	public String getLimitationPoints();
+	
+	/**
+	 * 
+	 * @return textual description of the limitation
+	 */
+	public String getLimitationText();
+	
 }
