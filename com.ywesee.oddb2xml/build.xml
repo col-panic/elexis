@@ -1,0 +1,25 @@
+<project default="generate-jaxb-code">
+	<target name="generate-jaxb-code">
+		<java classname="com.sun.tools.internal.xjc.XJCFacade">
+			<arg value="-d" />
+			<arg value="src-gen" />
+			<arg value="-p" />
+			<arg value="com.ywesee.oddb2xml.article" />
+			<arg value="rsc/oddb_article.xsd" />
+		</java>
+		<java classname="com.sun.tools.internal.xjc.XJCFacade">
+			<arg value="-d" />
+			<arg value="src-gen" />
+			<arg value="-p" />
+			<arg value="com.ywesee.oddb2xml.limitation" />
+			<arg value="rsc/oddb_limitation.xsd" />
+		</java>
+		<java classname="com.sun.tools.internal.xjc.XJCFacade">
+			<arg value="-d" />
+			<arg value="src-gen" />
+			<arg value="-p" />
+			<arg value="com.ywesee.oddb2xml.product" />
+			<arg value="rsc/oddb_product.xsd" />
+		</java>
+	</target>
+</project>

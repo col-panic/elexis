@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration" xmlns:ns1="http://wiki.oddb.org/wiki.php?pagename=Swissmedic.Datendeklaration">
+  <xs:element name="ARTICLE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="ns1:ART"/>
+        <xs:element ref="ns1:RESULT"/>
+      </xs:sequence>
+      <xs:attribute name="CREATION_DATETIME" use="required"/>
+      <xs:attribute name="PROD_DATE" use="required"/>
+      <xs:attribute name="VALID_DATE" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ART">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:PHAR"/>
+        <xs:element minOccurs="0" ref="ns1:SMCAT"/>
+        <xs:element minOccurs="0" ref="ns1:SMNO"/>
+        <xs:element ref="ns1:SALECD"/>
+        <xs:choice minOccurs="0">
+          <xs:element ref="ns1:COOL"/>
+          <xs:element ref="ns1:LIMPTS"/>
+        </xs:choice>
+        <xs:element ref="ns1:CDBG"/>
+        <xs:element ref="ns1:BG"/>
+        <xs:element minOccurs="0" ref="ns1:QTY"/>
+        <xs:element ref="ns1:DSCRD"/>
+        <xs:element ref="ns1:DSCRF"/>
+        <xs:element ref="ns1:SORTD"/>
+        <xs:element ref="ns1:SORTF"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="ns1:SYN1D"/>
+          <xs:element ref="ns1:SYN1F"/>
+          <xs:element ref="ns1:SLOPLUS"/>
+        </xs:sequence>
+        <xs:element ref="ns1:ARTCOMP"/>
+        <xs:element ref="ns1:ARTBAR"/>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="ns1:ARTPRI"/>
+        <xs:element minOccurs="0" ref="ns1:ARTINS"/>
+      </xs:sequence>
+      <xs:attribute name="DT" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PHAR" type="xs:string"/>
+  <xs:element name="SMCAT" type="xs:NCName"/>
+  <xs:element name="SMNO" type="xs:integer"/>
+  <xs:element name="SALECD" type="xs:NCName"/>
+  <xs:element name="COOL" type="xs:integer">
+  	<xs:annotation>
+  		<xs:documentation>Code for refrigeration: 1 = Yes (must refrigerate), NULL = No</xs:documentation>
+  	</xs:annotation></xs:element>
+  <xs:element name="LIMPTS" type="xs:integer"/>
+  <xs:element name="CDBG" type="xs:NCName">
+  	<xs:annotation>
+  		<xs:documentation>B = psychotropic drugsC = narcotic drugs to sale in little quantity without restrictionD = psychotropic drugs + narcotic drugs (=B + C) (should not exist)</xs:documentation>
+  	</xs:annotation></xs:element>
+  <xs:element name="BG" type="xs:NCName">
+  	<xs:annotation>
+  		<xs:documentation>Y = narcotic (Y/N)</xs:documentation>
+  	</xs:annotation></xs:element>
+  <xs:element name="QTY" type="xs:string"/>
+  <xs:element name="DSCRD" type="xs:string"/>
+  <xs:element name="DSCRF" type="xs:string"/>
+  <xs:element name="SORTD" type="xs:string"/>
+  <xs:element name="SORTF" type="xs:string"/>
+  <xs:element name="SYN1D" type="xs:string"/>
+  <xs:element name="SYN1F" type="xs:string"/>
+  <xs:element name="SLOPLUS" type="xs:integer"/>
+  <xs:element name="ARTCOMP">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:COMPNO"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="COMPNO" type="xs:integer"/>
+  <xs:element name="ARTBAR">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:CDTYP"/>
+        <xs:element ref="ns1:BC"/>
+        <xs:element ref="ns1:BCSTAT"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CDTYP" type="xs:NCName"/>
+  <xs:element name="BC" type="xs:integer"/>
+  <xs:element name="BCSTAT" type="xs:NCName"/>
+  <xs:element name="ARTPRI">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="ns1:VDAT"/>
+          <xs:element ref="ns1:PTYP"/>
+        </xs:sequence>
+        <xs:element minOccurs="0" ref="ns1:PRICE"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="VDAT" type="xs:NMTOKEN"/>
+  <xs:element name="PTYP" type="xs:NCName"/>
+  <xs:element name="PRICE" type="xs:decimal"/>
+  <xs:element name="ARTINS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:NINCD"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NINCD" type="xs:integer">
+  	<xs:annotation>
+  		<xs:documentation>Code for article being paid by insurance: 10 = Spezialitätenliste (SL) / Liste des spécialités (LS) (paid by insurance)13 = MiGeL anthroposophica (n. reg. Produkte nicht in Einteilung 12 enthalten / produits non enrég. et pas dans la cat. 12)</xs:documentation>
+  	</xs:annotation></xs:element>
+  <xs:element name="RESULT">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ns1:OK_ERROR"/>
+        <xs:element ref="ns1:NBR_RECORD"/>
+        <xs:element ref="ns1:ERROR_CODE"/>
+        <xs:element ref="ns1:MESSAGE"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OK_ERROR" type="xs:NCName"/>
+  <xs:element name="NBR_RECORD" type="xs:integer"/>
+  <xs:element name="ERROR_CODE">
+    <xs:complexType/>
+  </xs:element>
+  <xs:element name="MESSAGE">
+    <xs:complexType/>
+  </xs:element>
+</xs:schema>
