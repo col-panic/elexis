@@ -6,5 +6,7 @@
 	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar" sourcepath="lib/commons-cli-1.2-sources.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/at.medevit.ch.artikelstamm"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/net.e-mediat.bag"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ywesee.oddb2xml"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/net.e-mediat.igm"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

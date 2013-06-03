@@ -39,11 +39,10 @@ public class PreparationsEnricher {
 			List<Pack> packs = preparation.getPacks();
 			for (Pack pack : packs) {
 				overallCounter++;
-				ITEM item =
-					ArtikelstammHelper.getItemInListByPharmacode(artikelstamm, pack.pharmacode);
+				ITEM item = ArtikelstammHelper.getItemInListByGTIN(artikelstamm, pack.gtin);
 				if (item == null) {
-					// try to find by GTIN
-					item = ArtikelstammHelper.getItemInListByGTIN(artikelstamm, pack.swissMedicNo8);
+					// try to find by Pharmacode
+					ArtikelstammHelper.getItemInListByPharmacode(artikelstamm, pack.pharmacode);
 				}
 				if (item != null) {
 					// SL ENTRY
@@ -70,10 +69,9 @@ public class PreparationsEnricher {
 					if (preparation.orgGenCode != null && preparation.orgGenCode.length() == 1)
 						item.setGENERICTYPE(preparation.orgGenCode);
 					
-					// TODO more
 				} else {
-					System.out.println("[INFO] No phar/GTIN entry " + pack.pharmacode + "/7680"
-						+ pack.swissMedicNo8 + " found in artikelstamm");
+					System.out.println("[WARN] Tried to resolve " + pack.pharmacode + "/7680"
+						+ pack.swissMedicNo8 + " from Preparations in Artikelstamm");
 					counter++;
 				}
 			}

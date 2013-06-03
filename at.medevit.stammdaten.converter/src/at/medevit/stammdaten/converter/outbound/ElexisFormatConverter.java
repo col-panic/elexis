@@ -37,6 +37,7 @@ public class ElexisFormatConverter {
 			throw new IllegalArgumentException("Only PHARMA or NONPHARMA objects allowed.");
 		
 		ARTIKELSTAMM artikelstamm = new ARTIKELSTAMM();
+		artikelstamm.setDATAQUALITY(0);
 		
 		if (object instanceof PHARMA) {
 			PHARMA swissindexPharma = (PHARMA) object;
