@@ -53,7 +53,10 @@
     					</xs:element>
 
 
-    					<xs:element name="DSCR" nillable="false">
+                            <xs:element name="SWISSMEDIC_NO" minOccurs="0" maxOccurs="1">
+                                <xs:simpleType><xs:restriction base="xs:string"></xs:restriction></xs:simpleType>
+                            </xs:element>
+                            <xs:element name="DSCR" nillable="false">
     						<xs:annotation>
     							<xs:documentation xml:lang="EN">
     								Product description, e.g. Adalat
@@ -150,10 +153,11 @@
     						<xs:annotation>
     							<xs:documentation>
     								Publikumspreis in Franken und Rappen
-    								(inkl.MWSt) 							</xs:documentation>
+    								(inkl.MWSt)
+    							</xs:documentation>
     						</xs:annotation>
     					</xs:element>
-                            <xs:element name="PKG_SIZE" type="xs:int"
+    					<xs:element name="PKG_SIZE" type="xs:int"
     						maxOccurs="1" minOccurs="0">
     					</xs:element>
     					<xs:element name="SL_ENTRY" type="xs:boolean"

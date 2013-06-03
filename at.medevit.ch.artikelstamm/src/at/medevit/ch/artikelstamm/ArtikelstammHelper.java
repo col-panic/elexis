@@ -189,4 +189,18 @@ public class ArtikelstammHelper {
 		return null;
 	}
 	
+	/**
+	 * Returns the SwissmedicNo8 if the article is registered by GTIN for Switzerland ("76") and
+	 * Swissmedic ("80").
+	 * 
+	 * @param item
+	 * @return an 8-char-length string with the SwissmedicNo8, if not applicable <code>null</code>
+	 */
+	public String getSwissmedicNo8ForArtikelstammItem(ARTIKELSTAMM.ITEM item){
+		String gtin = item.getGTIN();
+		if (gtin != null && gtin.startsWith("7680"))
+			return gtin.substring(4, 12);
+		return null;
+	}
+	
 }
