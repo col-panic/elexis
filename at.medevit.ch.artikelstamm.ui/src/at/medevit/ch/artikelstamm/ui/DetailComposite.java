@@ -15,7 +15,6 @@ import java.util.List;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.PojoProperties;
-import org.eclipse.core.databinding.conversion.NumberToStringConverter;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
@@ -26,12 +25,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import at.medevit.atc_codes.ATCCode;
 import at.medevit.ch.artikelstamm.ui.internal.ATCCodeServiceConsumer;
+import at.medevit.ch.artikelstamm.ui.internal.DatabindingTextResizeConverter;
 
 public class DetailComposite extends Composite {
 	private DataBindingContext m_bindingContext;
@@ -50,18 +51,12 @@ public class DetailComposite extends Composite {
 	private Label lblSelbstbehalt;
 	private Label lblSELBSTBEHALT;
 	private Button btnCheckIsNarcotic;
-	
-	private UpdateValueStrategy doubleToString = new UpdateValueStrategy()
-		.setConverter(NumberToStringConverter.fromDouble(false));
-	private UpdateValueStrategy integerToString = new UpdateValueStrategy()
-		.setConverter(NumberToStringConverter.fromInteger(true));
 	private Button btnLPPVEntry;
 	private Button btnlLimitation;
-	private Label lblLIMITATION;
 	private Label lblLimitationspunkte;
 	private Label lblLIMITATIONPOINTS;
 	private Label lblLimitationstext;
-	private Label lblLIMITATIONTEXT;
+	private Text txtLIMITATIONTEXT;
 	
 	public DetailComposite(Composite parent, int style){
 		super(parent, style);
@@ -167,11 +162,13 @@ public class DetailComposite extends Composite {
 		lblLIMITATIONPOINTS.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		lblLimitationstext = new Label(grpLimitations, SWT.NONE);
+		lblLimitationstext.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false, 1, 1));
 		lblLimitationstext.setFont(SWTResourceManager.getFont("Lucida Grande", 11, SWT.BOLD));
 		lblLimitationstext.setText("Limitationstext");
 		
-		lblLIMITATIONTEXT = new Label(grpLimitations, SWT.WRAP);
-		lblLIMITATIONTEXT.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtLIMITATIONTEXT = new Text(grpLimitations, SWT.WRAP | SWT.MULTI);
+		txtLIMITATIONTEXT.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtLIMITATIONTEXT.setBackground(grpLimitations.getBackground());
 		
 		Group grpHersteller = new Group(this, SWT.NONE);
 		grpHersteller.setLayout(new GridLayout(1, false));
@@ -181,7 +178,6 @@ public class DetailComposite extends Composite {
 		lblHERSTELLER = new Label(grpHersteller, SWT.NONE);
 		lblHERSTELLER.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		m_bindingContext = initDataBindings();
-		
 	}
 	
 	@Override
@@ -287,7 +283,7 @@ public class DetailComposite extends Composite {
 			itemNarcoticObserveDetailValue, null, null);
 		//
 		IObservableValue observeTextLblLIMITATIONTEXTObserveWidget =
-			WidgetProperties.text().observe(lblLIMITATIONTEXT);
+			WidgetProperties.text().observe(txtLIMITATIONTEXT);
 		IObservableValue itemLimitationTextObserveDetailValue =
 			PojoProperties.value(IArtikelstammItem.class, "limitationText", String.class)
 				.observeDetail(item);
@@ -317,6 +313,16 @@ public class DetailComposite extends Composite {
 				item);
 		bindingContext.bindValue(observeSelectionBtnlLimitationObserveWidget,
 			itemLimitedObserveDetailValue, null, null);
+		//
+		IObservableValue observeSizeLblLIMITATIONTEXTObserveWidget =
+			WidgetProperties.size().observe(txtLIMITATIONTEXT);
+		IObservableValue observeTextLblLIMITATIONTEXTObserveWidget_1 =
+			WidgetProperties.text(SWT.Modify).observe(txtLIMITATIONTEXT);
+		UpdateValueStrategy strategy = new UpdateValueStrategy();
+		strategy.setConverter(new DatabindingTextResizeConverter(txtLIMITATIONTEXT));
+		bindingContext.bindValue(observeSizeLblLIMITATIONTEXTObserveWidget,
+			observeTextLblLIMITATIONTEXTObserveWidget_1, new UpdateValueStrategy(
+				UpdateValueStrategy.POLICY_NEVER), strategy);
 		//
 		return bindingContext;
 	}
