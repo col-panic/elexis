@@ -23,6 +23,7 @@ public class PreparationsParser extends DefaultHandler {
 	public static final String FLD_FLAG_SB20 = "FlagSB20";
 	public static final String FLD_ORIG_GEN = "OrgGenCode";
 	public static final String FLD_PACK = "Pack";
+	public static final String FLD_GTIN = "GTIN";
 	public static final String ATTRIBUTE_PHARMACODE = "Pharmacode";
 	public static final String FLD_SWISSMEDICNO8 = "SwissmedicNo8";
 	public static final String FLD_SWISSMEDIC_CATEGORY = "SwissmedicCategory";
@@ -106,6 +107,8 @@ public class PreparationsParser extends DefaultHandler {
 		case FLD_SWISSMEDICNO8:
 			currentPack.swissMedicNo8 = currentValue;
 			break;
+		case FLD_GTIN:
+			currentPack.gtin = currentValue;
 		default:
 			break;
 		}

@@ -16,4 +16,5 @@ public class Pack {
 	public String pharmacode;
 	public boolean flagNarcosis;
 	public String swissMedicNo8;
+	public String gtin;
 }
