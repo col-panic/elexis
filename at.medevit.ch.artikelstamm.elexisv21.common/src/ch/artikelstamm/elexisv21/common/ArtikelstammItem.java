@@ -96,7 +96,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 			+ FLD_IKSCAT + " CHAR(1),"
 			+ FLD_LIMITATION + " CHAR(1),"
 			+ FLD_LIMITATION_PTS+ " CHAR(4),"
-			+ FLD_LIMITATION_TEXT + " VARCHAR(255),"
+			+ FLD_LIMITATION_TEXT + " VARCHAR(1024),"
 			+ FLD_GENERIC_TYPE + " CHAR(1),"
 			+ FLD_HAS_GENERIC + " CHAR(1),"
 			+ FLD_LPPV + " CHAR(1),"
