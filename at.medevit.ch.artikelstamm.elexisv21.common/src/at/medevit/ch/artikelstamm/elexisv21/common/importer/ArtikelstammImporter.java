@@ -159,6 +159,11 @@ public class ArtikelstammImporter extends ImporterPage {
 		for (Prescription p : resultPrescription) {
 			if (p.getArtikel() instanceof ArtikelstammItem) {
 				ArtikelstammItem ai = (ArtikelstammItem) p.getArtikel();
+				if (ai == null || ai.get(ArtikelstammItem.FLD_ITEM_TYPE) == null) {
+					logger.log("Invalid ArtikestammItem or missing item type in " + ai, Log.ERRORS);
+					subMonitor.worked(1);
+					continue;
+				}
 				if (ai.get(ArtikelstammItem.FLD_ITEM_TYPE).equalsIgnoreCase(importStammType.name()))
 					ai.set(ArtikelstammItem.FLD_BLACKBOXED,
 						BlackBoxReason.IS_REFERENCED_IN_FIXMEDICATION.getNumericalReasonString());
@@ -177,6 +182,11 @@ public class ArtikelstammImporter extends ImporterPage {
 				&& vr.getVerrechenbar().getCodeSystemName()
 					.equals(ArtikelstammConstants.CODESYSTEM_NAME)) {
 				ArtikelstammItem ai = ArtikelstammItem.load(vr.getVerrechenbar().getId());
+				if (ai == null || ai.get(ArtikelstammItem.FLD_ITEM_TYPE) == null) {
+					logger.log("Invalid ArtikestammItem or missing item type in " + ai, Log.ERRORS);
+					subMonitor.worked(1);
+					continue;
+				}
 				if (ai.get(ArtikelstammItem.FLD_ITEM_TYPE).equalsIgnoreCase(importStammType.name()))
 					ai.set(ArtikelstammItem.FLD_BLACKBOXED,
 						BlackBoxReason.IS_REFERENCED_IN_CONSULTATION.getNumericalReasonString());
