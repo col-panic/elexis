@@ -19,11 +19,11 @@ public class ArtikelstammLabelProvider extends LabelProvider {
 	private Image emptyTransparent = ResourceManager.getPluginImage(
 		"at.medevit.ch.artikelstamm.ui", "rsc/icons/emptyTransparent.png");
 	private Image gGruen = ResourceManager.getPluginImage("at.medevit.ch.artikelstamm.ui",
-		"/rsc/icons/ggruen.png");
+		"rsc/icons/ggruen.png");
 	private Image oBlau = ResourceManager.getPluginImage("at.medevit.ch.artikelstamm.ui",
-		"/rsc/icons/oblau.ico");
+		"rsc/icons/oblau.ico");
 	private Image oRot = ResourceManager.getPluginImage("at.medevit.ch.artikelstamm.ui",
-		"/rsc/icons/oblau.ico");
+		"rsc/icons/oblau.ico");
 	
 	@Override
 	public String getText(Object element){
