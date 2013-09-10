@@ -50,9 +50,11 @@ public class Oddb2XmlArticleEnricher {
 			}
 			if (item != null) {
 				// Limitation information
-				LIM limitation =
-					Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(oddb2xmlLIMList,
-						article.getSMNO());
+				LIM limitation = null;
+				if (article.getSMNO() != null)
+					limitation =
+						Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(oddb2xmlLIMList,
+							article.getSMNO());
 				if (limitation != null) {
 					item.setLIMITATION(true);
 					item.setLIMITATIONTEXT(limitation.getDSCRD());

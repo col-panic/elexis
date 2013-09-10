@@ -58,6 +58,11 @@ public class Oddb2XmlHelper {
 	 * @return the {@link LIM} or <code>null</code> if not found
 	 */
 	public static LIM getItemInLimitationListBySwissmedicNo(List<LIM> limitList, BigInteger smno){
+		if (smno == null)
+			throw new IllegalArgumentException("swissmedic number is null");
+		if (limitList == null)
+			throw new IllegalArgumentException("limitlist is null");
+		
 		LIM ret = null;
 		if (limitationListCache == null) {
 			System.out.println("[INFO] Initializing limitationList HashMap with "
