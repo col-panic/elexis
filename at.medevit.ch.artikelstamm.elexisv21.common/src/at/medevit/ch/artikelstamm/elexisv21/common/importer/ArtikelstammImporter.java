@@ -41,6 +41,7 @@ import ch.elexis.data.PersistentObject;
 import ch.elexis.data.Prescription;
 import ch.elexis.data.Query;
 import ch.elexis.data.Verrechnet;
+import ch.elexis.status.ElexisStatus;
 import ch.elexis.util.ImporterPage;
 import ch.elexis.util.Log;
 import ch.elexis.util.SWTHelper;
@@ -66,12 +67,14 @@ public class ArtikelstammImporter extends ImporterPage {
 			importStamm = ArtikelstammHelper.unmarshallFile(file);
 		} catch (JAXBException je) {
 			Status status =
-				new Status(IStatus.ERROR, PLUGIN_ID, "Fehler beim Einlesen der Import-Datei", je);
+				new ElexisStatus(IStatus.ERROR, PLUGIN_ID, ElexisStatus.CODE_NOFEEDBACK,
+					"Fehler beim Einlesen der Import-Datei", je, ElexisStatus.LOG_FATALS);
 			StatusManager.getManager().handle(status, StatusManager.SHOW);
 			return Status.CANCEL_STATUS;
 		} catch (SAXException saxe) {
 			Status status =
-				new Status(IStatus.ERROR, PLUGIN_ID, "Fehler beim Einlesen der Import-Datei", saxe);
+				new ElexisStatus(IStatus.ERROR, PLUGIN_ID, ElexisStatus.CODE_NOFEEDBACK,
+					"Fehler beim Einlesen der Import-Datei", saxe, ElexisStatus.LOG_FATALS);
 			StatusManager.getManager().handle(status, StatusManager.SHOW);
 			return Status.CANCEL_STATUS;
 		}
