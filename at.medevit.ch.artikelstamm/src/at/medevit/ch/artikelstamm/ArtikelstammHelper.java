@@ -33,7 +33,7 @@ import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEM;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
 
 public class ArtikelstammHelper {
-	public static String PHARMA_XSD_LOCATION = "Elexis_Artikelstamm_v001.xsd";
+	public static String PHARMA_XSD_LOCATION = "/lib/Elexis_Artikelstamm_v001.xsd";
 	
 	private static SchemaFactory schemaFactory = SchemaFactory
 		.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
