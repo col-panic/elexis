@@ -505,7 +505,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		try {
 			return Double.parseDouble(get(FLD_PEXF));
 		} catch (NumberFormatException ex) {
-			return null;
+			return new Double(0.0d);
 		}
 		
 	}
@@ -515,7 +515,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		try {
 			return Double.parseDouble(get(FLD_PPUB));
 		} catch (NumberFormatException ex) {
-			return null;
+			return new Double(0.0d);
 		}
 	}
 	
