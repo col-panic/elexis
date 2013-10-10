@@ -13,6 +13,7 @@ import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
 import com.ywesee.oddb2xml.article.ART;
 import com.ywesee.oddb2xml.article.ARTICLE;
+import com.ywesee.oddb2xml.article.ARTPRI;
 import com.ywesee.oddb2xml.limitation.LIM;
 import com.ywesee.oddb2xml.limitation.LIMITATION;
 import com.ywesee.oddb2xml.product.PRD;
@@ -20,6 +21,7 @@ import com.ywesee.oddb2xml.product.PRODUCT;
 
 public class Oddb2XmlArticleEnricher {
 	
+	private static final String PTYP_ZURROSE = "ZURROSE";
 	private static List<ART> oddb2xmlARTList = null;
 	private static List<LIM> oddb2xmlLIMList = null;
 	private static List<PRD> oddb2xmlPRDList = null;
@@ -77,6 +79,16 @@ public class Oddb2XmlArticleEnricher {
 						item.setDEDUCTIBLE(20);
 					} else if (value == 2) {
 						item.setDEDUCTIBLE(10);
+					}
+				}
+				
+				// zur Rose Preis information - param -p zurrose
+				if (article.getARTPRI().size() > 0) {
+					List<ARTPRI> prices = article.getARTPRI();
+					for (ARTPRI artpri : prices) {
+						if (artpri.getPTYP() != null && artpri.getPTYP().equals(PTYP_ZURROSE)) {
+							item.setPEXF(artpri.getPRICE().doubleValue());
+						}
 					}
 				}
 				

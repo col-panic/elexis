@@ -8,6 +8,6 @@
 </listAttribute>
 <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="at.medevit.stammdaten.converter.Convert"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--inboundFile &quot;/Users/marco/Desktop/[1177] Stammdaten Neu/swissindex_PHARMA_160513.xml&quot; --preparationsFile &quot;/Users/marco/Desktop/[1177] Stammdaten Neu/Preparations.xml&quot; --oddb2xmlArticleFile  &quot;/Users/marco/Desktop/[1177] Stammdaten Neu/oddb_article.xml&quot; --oddb2xmlLimitationFile  &quot;/Users/marco/Desktop/[1177] Stammdaten Neu/oddb_limitation.xml&quot; --oddb2xmlProductFile &quot;/Users/marco/Desktop/[1177] Stammdaten Neu/oddb_product.xml&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--inboundFile &quot;/Users/marco/Desktop/StammdatenNeu/swissindex_PHARMA_011013.xml&quot; --preparationsFile &quot;/Users/marco/Desktop/StammdatenNeu/Preparations.xml&quot; --oddb2xmlArticleFile  &quot;/Users/marco/Desktop/StammdatenNeu/oddb_article.xml&quot; --oddb2xmlLimitationFile  &quot;/Users/marco/Desktop/StammdatenNeu/oddb_limitation.xml&quot; --oddb2xmlProductFile &quot;/Users/marco/Desktop/StammdatenNeu/oddb_product.xml&quot;"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="at.medevit.stammdaten.converter"/>
 </launchConfiguration>
