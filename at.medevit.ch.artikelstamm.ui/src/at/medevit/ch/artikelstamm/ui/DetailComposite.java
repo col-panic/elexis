@@ -18,6 +18,9 @@ import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.WritableValue;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.fieldassist.ControlDecoration;
+import org.eclipse.jface.fieldassist.FieldDecoration;
+import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -57,6 +60,7 @@ public class DetailComposite extends Composite {
 	private Label lblLIMITATIONPOINTS;
 	private Label lblLimitationstext;
 	private Text txtLIMITATIONTEXT;
+	private ControlDecoration controlDecoIsCalculatedPPUB;
 	
 	public DetailComposite(Composite parent, int style){
 		super(parent, style);
@@ -113,6 +117,14 @@ public class DetailComposite extends Composite {
 		
 		lblPUBLICPRICE = new Label(grpPackungsgroessenPreise, SWT.NONE);
 		lblPUBLICPRICE.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		controlDecoIsCalculatedPPUB = new ControlDecoration(lblPUBLICPRICE, SWT.LEFT | SWT.TOP);
+		controlDecoIsCalculatedPPUB.setDescriptionText("Preis wurde mittels Marge kalkuliert!");
+		FieldDecoration fieldDecoration =
+			FieldDecorationRegistry.getDefault().getFieldDecoration(
+				FieldDecorationRegistry.DEC_INFORMATION);
+		controlDecoIsCalculatedPPUB.setImage(fieldDecoration.getImage());
+		controlDecoIsCalculatedPPUB.hide();
 		
 		lblSelbstbehalt = new Label(grpPackungsgroessenPreise, SWT.NONE);
 		lblSelbstbehalt.setText("Selbstbehalt (%)");
@@ -187,7 +199,11 @@ public class DetailComposite extends Composite {
 	
 	public void setItem(IArtikelstammItem obj){
 		item.setValue(obj);
-		
+		if (obj.isCalculatedPrice()) {
+			controlDecoIsCalculatedPPUB.show();
+		} else {
+			controlDecoIsCalculatedPPUB.hide();
+		}
 		treeATC.removeAll();
 		if (ATCCodeServiceConsumer.getATCCodeService() != null) {
 			List<ATCCode> atcHierarchy =

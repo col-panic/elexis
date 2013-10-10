@@ -2,8 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Elexis Artikelstamm Format
 Bundle-SymbolicName: at.medevit.ch.artikelstamm
-Bundle-Version: 1.0.1.qualifier
-Export-Package: at.medevit.ch.artikelstamm
+Bundle-Version: 1.0.2.qualifier
+Export-Package: at.medevit.ch.artikelstamm,
+ at.medevit.ch.artikelstamm.marge
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Vendor: medevit.at
 Bundle-ClassPath: lib/,

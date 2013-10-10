@@ -109,4 +109,10 @@ public interface IArtikelstammItem {
 	 */
 	public String getLimitationText();
 	
+	/**
+	 * 
+	 * @return whether this public price is calculated out of the ex-factory price plus margin
+	 */
+	public boolean isCalculatedPrice();
+	
 }
