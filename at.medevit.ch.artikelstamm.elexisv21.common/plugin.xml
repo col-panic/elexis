@@ -7,5 +7,14 @@
             Class="ch.artikelstamm.elexisv21.common.ArtikelstammPOFactory">
       </Factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="ch.elexis.Leistungscodes"
+            class="at.medevit.ch.artikelstamm.elexisv21.common.ui.preferences.ArtikelstammPreferencePage"
+            id="at.medevit.ch.artikelstamm.elexisv21.common.ui.preferences.ArtikelstammPreferencePage"
+            name="Artikelstamm">
+      </page>
+   </extension>
 
 </plugin>

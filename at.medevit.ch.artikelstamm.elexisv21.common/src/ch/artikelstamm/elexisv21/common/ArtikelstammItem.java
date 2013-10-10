@@ -20,8 +20,8 @@ import java.util.List;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
 import at.medevit.ch.artikelstamm.ArtikelstammHelper;
+import at.medevit.ch.artikelstamm.elexisv21.common.preference.MargePreference;
 import at.medevit.ch.artikelstamm.ui.IArtikelstammItem;
-import ch.elexis.Hub;
 import ch.elexis.StringConstants;
 import ch.elexis.data.Artikel;
 import ch.elexis.data.Fall;
@@ -258,13 +258,33 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	}
 	
 	@Override
-	public Money getVKPreis(){
-		try {
-			return new Money(checkZero(get(FLD_PPUB)));
-		} catch (Throwable ex) {
-			Hub.log.log("Fehler beim Einlesen von VK für " + getLabel(), Log.ERRORS);
-		}
+	public Money getEKPreis(){
+		String value = get(FLD_PEXF);
+		if (value != null && !value.isEmpty())
+			return new Money(Double.parseDouble(value));
 		return new Money();
+	}
+	
+	@Override
+	public Money getVKPreis(){
+		String value = get(FLD_PPUB);
+		if (value != null && !value.isEmpty()) {
+			return new Money(Double.parseDouble(value));
+		}
+		
+		return MargePreference.calculateVKP(getEKPreis());
+	}
+	
+	public boolean isCalculatedPrice(){
+		String value = get(FLD_PPUB);
+		if (value != null && !value.isEmpty()) {
+			return false;
+		}
+		String exfValue = get(FLD_PEXF);
+		if (exfValue != null && !exfValue.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 	
 	// -- VERRECHENBAR ADAPTER ---
@@ -500,23 +520,13 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	
 	@Override
 	public Double getExFactoryPrice(){
-		if (get(FLD_PEXF) == null)
-			return null;
-		try {
-			return Double.parseDouble(get(FLD_PEXF));
-		} catch (NumberFormatException ex) {
-			return new Double(0.0d);
-		}
+		return getEKPreis().doubleValue();
 		
 	}
 	
 	@Override
 	public Double getPublicPrice(){
-		try {
-			return Double.parseDouble(get(FLD_PPUB));
-		} catch (NumberFormatException ex) {
-			return new Double(0.0d);
-		}
+		return getVKPreis().doubleValue();
 	}
 	
 	@Override
