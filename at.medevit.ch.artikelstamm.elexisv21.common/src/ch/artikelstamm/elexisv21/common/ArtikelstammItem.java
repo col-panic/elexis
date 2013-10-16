@@ -25,6 +25,7 @@ import ch.elexis.StringConstants;
 import ch.elexis.data.Artikel;
 import ch.elexis.data.Fall;
 import ch.elexis.data.Query;
+import ch.elexis.util.IOptifier;
 import ch.elexis.util.Log;
 import ch.rgw.tools.JdbcLink;
 import ch.rgw.tools.Money;
@@ -39,6 +40,9 @@ import ch.rgw.tools.VersionInfo;
 public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	private static Log logger = Log.get(ArtikelstammItem.class.getName());
 	private static DateFormat df = new SimpleDateFormat("ddMMyy HH:mm");
+	
+	private static IOptifier noObligationOptifier = new NoObligationOptifier();
+	private static IOptifier defaultOptifier = new DefaultOptifier();
 	
 	public static final String TABLENAME = "ARTIKELSTAMM_CH";
 	static final String VERSION = "1.0.0";
@@ -299,6 +303,14 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	}
 	
 	@Override
+	public IOptifier getOptifier(){
+		VatInfo vatInfo = getVatInfo();
+		if (!vatInfo.equals(VatInfo.VAT_CH_ISMEDICAMENT))
+			return noObligationOptifier;
+		return defaultOptifier;
+	}
+	
+	@Override
 	public int getPreis(TimeTool dat, Fall fall){
 		return getVKPreis().getCents();
 	}
@@ -543,7 +555,11 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		// Medikament wenn SL nicht 20 % dann 10 %
 		String val = get(FLD_DEDUCTIBLE).trim();
 		if (val == null || val.length() < 1)
-			return 0;
+			if (isInSLList()) {
+				return 0;
+			} else {
+				return -1;
+			}
 		try {
 			return new Integer(val);
 		} catch (NumberFormatException nfe) {
