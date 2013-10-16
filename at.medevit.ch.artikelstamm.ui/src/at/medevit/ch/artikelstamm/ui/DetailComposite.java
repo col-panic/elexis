@@ -36,6 +36,7 @@ import org.eclipse.wb.swt.SWTResourceManager;
 import at.medevit.atc_codes.ATCCode;
 import at.medevit.ch.artikelstamm.ui.internal.ATCCodeServiceConsumer;
 import at.medevit.ch.artikelstamm.ui.internal.DatabindingTextResizeConverter;
+import at.medevit.ch.artikelstamm.ui.internal.IntToStringConverterSelbstbehalt;
 
 public class DetailComposite extends Composite {
 	private DataBindingContext m_bindingContext;
@@ -285,10 +286,12 @@ public class DetailComposite extends Composite {
 		IObservableValue observeTextLblSELBSTBEHALTObserveWidget =
 			WidgetProperties.text().observe(lblSELBSTBEHALT);
 		IObservableValue itemDeductibleObserveDetailValue =
-			PojoProperties.value(IArtikelstammItem.class, "deductible", int.class).observeDetail(
-				item);
+			PojoProperties.value(IArtikelstammItem.class, "deductible", Integer.class)
+				.observeDetail(item);
+		UpdateValueStrategy strategy_1 = new UpdateValueStrategy();
+		strategy_1.setConverter(new IntToStringConverterSelbstbehalt());
 		bindingContext.bindValue(observeTextLblSELBSTBEHALTObserveWidget,
-			itemDeductibleObserveDetailValue, null, null);
+			itemDeductibleObserveDetailValue, null, strategy_1);
 		//
 		IObservableValue observeSelectionBtnCheckIsNarcoticObserveWidget =
 			WidgetProperties.selection().observe(btnCheckIsNarcotic);
