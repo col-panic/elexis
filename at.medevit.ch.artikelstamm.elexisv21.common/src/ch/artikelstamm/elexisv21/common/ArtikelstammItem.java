@@ -12,7 +12,6 @@ package ch.artikelstamm.elexisv21.common;
 
 import java.math.BigInteger;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -301,13 +300,7 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	
 	@Override
 	public int getPreis(TimeTool dat, Fall fall){
-		try {
-			Money m = new Money(get(FLD_PPUB));
-			return m.getCents();
-		} catch (ParseException e) {
-			logger.log(e, "Error parsing price " + get(FLD_PPUB), Log.WARNINGS);
-		}
-		return 0;
+		return getVKPreis().getCents();
 	}
 	
 	@Override
