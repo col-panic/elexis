@@ -92,7 +92,11 @@ public class DetailDisplay implements IDetailDisplay {
 	}
 	
 	private void addDataSetStateLabelToComposite(DetailComposite dc){
-		Label label = new Label(dc, SWT.NONE);
+		Composite ret = new Composite(dc, SWT.None);
+		ret.setLayout(new GridLayout(2, false));
+		ret.setLayoutData(new GridData(SWT.FILL, SWT.VERTICAL, true, false));
+		
+		Label label = new Label(ret, SWT.NONE);
 		label.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false, 1, 1));
 		StringBuilder sb = new StringBuilder();
 		int pharma = ArtikelstammItem.getImportSetCumulatedVersion(TYPE.P);
@@ -115,6 +119,16 @@ public class DetailDisplay implements IDetailDisplay {
 		
 		label.setText("Datensatz-Basis: " + sb.toString());
 		
+		addUpdateLabelToBottom(ret);
+	}
+	
+	/**
+	 * Hook to allow adding a label calling update
+	 * 
+	 * @param dc
+	 */
+	public void addUpdateLabelToBottom(Composite dc){
+		// Overwritten by subclasses
 	}
 	
 	private String dataQualityToString(int dq){

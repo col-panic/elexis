@@ -234,7 +234,8 @@ public class DetailComposite extends Composite {
 		//
 		IObservableValue observeTextLblDSCRObserveWidget = WidgetProperties.text().observe(lblDSCR);
 		IObservableValue itemDSCRObserveDetailValue =
-			PojoProperties.value(IArtikelstammItem.class, "DSCR", String.class).observeDetail(item);
+			PojoProperties.value(IArtikelstammItem.class, "label", String.class)
+				.observeDetail(item);
 		bindingContext.bindValue(observeTextLblDSCRObserveWidget, itemDSCRObserveDetailValue,
 			new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
 		//
@@ -299,7 +300,8 @@ public class DetailComposite extends Composite {
 			PojoProperties.value(IArtikelstammItem.class, "narcotic", boolean.class).observeDetail(
 				item);
 		bindingContext.bindValue(observeSelectionBtnCheckIsNarcoticObserveWidget,
-			itemNarcoticObserveDetailValue, null, null);
+			itemNarcoticObserveDetailValue, new UpdateValueStrategy(
+				UpdateValueStrategy.POLICY_NEVER), null);
 		//
 		IObservableValue observeTextLblLIMITATIONTEXTObserveWidget =
 			WidgetProperties.text().observe(txtLIMITATIONTEXT);
@@ -323,7 +325,8 @@ public class DetailComposite extends Composite {
 			PojoProperties.value(IArtikelstammItem.class, "inLPPV", boolean.class).observeDetail(
 				item);
 		bindingContext.bindValue(observeSelectionBtnLPPVEntryObserveWidget,
-			itemInLPPVObserveDetailValue, null, null);
+			itemInLPPVObserveDetailValue,
+			new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
 		//
 		IObservableValue observeSelectionBtnlLimitationObserveWidget =
 			WidgetProperties.selection().observe(btnlLimitation);
@@ -331,7 +334,8 @@ public class DetailComposite extends Composite {
 			PojoProperties.value(IArtikelstammItem.class, "limited", boolean.class).observeDetail(
 				item);
 		bindingContext.bindValue(observeSelectionBtnlLimitationObserveWidget,
-			itemLimitedObserveDetailValue, null, null);
+			itemLimitedObserveDetailValue,
+			new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER), null);
 		//
 		IObservableValue observeSizeLblLIMITATIONTEXTObserveWidget =
 			WidgetProperties.size().observe(txtLIMITATIONTEXT);
