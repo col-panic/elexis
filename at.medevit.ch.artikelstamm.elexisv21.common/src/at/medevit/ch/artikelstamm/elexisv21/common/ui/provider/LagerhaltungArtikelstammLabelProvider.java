@@ -10,7 +10,7 @@
  ******************************************************************************/
 package at.medevit.ch.artikelstamm.elexisv21.common.ui.provider;
 
-import org.eclipse.jface.viewers.ITableColorProvider;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
@@ -27,16 +27,24 @@ import ch.elexis.preferences.PreferenceConstants;
  * stock status of articles. Applicable to Elexis v2.1 only.
  */
 public class LagerhaltungArtikelstammLabelProvider extends ArtikelstammLabelProvider implements
-		ITableColorProvider {
+		IColorProvider {
 	
 	private Image blackBoxedImage = ResourceManager.getPluginImage("at.medevit.ch.artikelstamm.ui",
 		"/rsc/icons/flag-black.png");
+	
+	@Override
+	public Image getImage(Object element){
+		ArtikelstammItem ai = (ArtikelstammItem) element;
+		if (ai.isBlackBoxed())
+			return blackBoxedImage;
+		return super.getImage(element);
+	}
 	
 	/**
 	 * Lagerartikel are shown in blue, articles that should be ordered are shown in red
 	 */
 	@Override
-	public Color getForeground(Object element, int columnIndex){
+	public Color getForeground(Object element){
 		ArtikelstammItem ai = (ArtikelstammItem) element;
 		if (ai.isLagerartikel()) {
 			int trigger =
@@ -68,19 +76,11 @@ public class LagerhaltungArtikelstammLabelProvider extends ArtikelstammLabelProv
 	}
 	
 	@Override
-	public Color getBackground(Object element, int columnIndex){
+	public Color getBackground(Object element){
 		ArtikelstammItem ai = (ArtikelstammItem) element;
 		if (ai.isBlackBoxed())
 			return Desk.getColor(Desk.COL_GREY60);
 		return null;
-	}
-	
-	@Override
-	public Image getImage(Object element){
-		ArtikelstammItem ai = (ArtikelstammItem) element;
-		if (ai.isBlackBoxed())
-			return blackBoxedImage;
-		return super.getImage(element);
 	}
 	
 }

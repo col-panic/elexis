@@ -10,9 +10,12 @@
  ******************************************************************************/
 package at.medevit.ch.artikelstamm.elexisv21.common.ui;
 
+import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.swt.SWT;
+import org.eclipse.ui.PlatformUI;
 
 import at.medevit.ch.artikelstamm.ArtikelstammConstants;
+import at.medevit.ch.artikelstamm.elexisv21.common.ui.provider.ArtikelstammDecoratingLabelProvider;
 import at.medevit.ch.artikelstamm.elexisv21.common.ui.provider.LagerhaltungArtikelstammLabelProvider;
 import ch.artikelstamm.elexisv21.common.ArtikelstammItem;
 import ch.elexis.actions.FlatDataLoader;
@@ -54,10 +57,15 @@ public class ArtikelstammCodeSelectorFactory extends CodeSelectorFactory {
 		SimpleWidgetProvider swp =
 			new SimpleWidgetProvider(SimpleWidgetProvider.TYPE_LAZYLIST, SWT.NONE, null);
 		
-		ViewerConfigurer vc =
-			new ViewerConfigurer(fdl, new LagerhaltungArtikelstammLabelProvider(),
-			// new MedINDEXArticleControlFieldProvider(cv),
-				slp, new ViewerConfigurer.DefaultButtonProvider(), swp);
+		ILabelDecorator decorator =
+			PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator();
+		ArtikelstammDecoratingLabelProvider adlp =
+			new ArtikelstammDecoratingLabelProvider(new LagerhaltungArtikelstammLabelProvider(),
+				decorator);
+		
+		ViewerConfigurer vc = new ViewerConfigurer(fdl, adlp,
+		// new MedINDEXArticleControlFieldProvider(cv),
+			slp, new ViewerConfigurer.DefaultButtonProvider(), swp);
 		
 // MenuManager menuManager = new MenuManager();
 // menuManager.add(new CSFMedINDEXArticleMenuContribution(cv));
