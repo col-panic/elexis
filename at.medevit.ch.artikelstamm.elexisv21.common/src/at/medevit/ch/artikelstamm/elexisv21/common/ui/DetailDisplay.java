@@ -236,5 +236,41 @@ public class DetailDisplay implements IDetailDisplay {
 			}
 		});
 		
+		// Stk. pro Pkg.
+		Label lblStkProPack = new Label(grpLagerhaltung, SWT.NONE);
+		lblStkProPack.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblStkProPack.setText("Stk. pro Pckg.");
+		
+		Text txtStkProPack = new Text(grpLagerhaltung, SWT.BORDER);
+		txtStkProPack.setTextLimit(4);
+		GridData gd_txtStkProPack = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_txtStkProPack.widthHint = 40;
+		txtStkProPack.setLayoutData(gd_txtStkProPack);
+		IObservableValue propertyStkProPack =
+			PojoProperties.value(ArtikelstammItem.class, "verpackungseinheit", Integer.class)
+				.observeDetail(item);
+		IObservableValue targetStkProPack =
+			WidgetProperties.text(SWT.Modify).observe(txtStkProPack);
+		bindingContext.bindValue(targetStkProPack, propertyStkProPack, stringToInteger,
+			integerToString);
+		
+		// Stk. pro Abgabe
+		Label lblStkProAbgabe = new Label(grpLagerhaltung, SWT.NONE);
+		lblStkProAbgabe.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
+		lblStkProAbgabe.setText("Stk. pro Abgabe");
+		
+		Text txtStkProAbgabe = new Text(grpLagerhaltung, SWT.BORDER);
+		txtStkProAbgabe.setTextLimit(4);
+		GridData gd_txtStkProAbgabe = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+		gd_txtStkProAbgabe.widthHint = 40;
+		txtStkProAbgabe.setLayoutData(gd_txtStkProAbgabe);
+		IObservableValue propertyStkProAbgabe =
+			PojoProperties.value(ArtikelstammItem.class, "verkaufseinheit", Integer.class)
+				.observeDetail(item);
+		IObservableValue targetStkProAbgabe =
+			WidgetProperties.text(SWT.Modify).observe(txtStkProAbgabe);
+		bindingContext.bindValue(targetStkProAbgabe, propertyStkProAbgabe, stringToInteger,
+			integerToString);
+		
 	}
 }

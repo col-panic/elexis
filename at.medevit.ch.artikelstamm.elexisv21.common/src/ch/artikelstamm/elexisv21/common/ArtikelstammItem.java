@@ -111,8 +111,8 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 			+ MAXBESTAND + " VARCHAR(4),"
 			+ MINBESTAND + " VARCHAR(4),"
 			+ ISTBESTAND + " VARCHAR(4),"
-			+ VERKAUFSEINHEIT + " VARCHAR(4),"
-			+ ANBRUCH + " VARCHAR(4)"
+			+ VERKAUFSEINHEIT + " VARCHAR(4),"  // Stück pro Abgabe
+			+ ANBRUCH + " VARCHAR(4)"			// Aktuell am Lager
 			+ "); "
 			+ "CREATE INDEX idxPHAR ON " + TABLENAME + " ("+FLD_PHAR+"); "
 			+ "CREATE INDEX idxITEMTYPE ON " + TABLENAME + " ("+FLD_ITEM_TYPE+"); "
@@ -183,11 +183,15 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	public ArtikelstammItem(int cummulatedVersion, TYPE type, String gtin, BigInteger phar,
 		String dscr, String addscr){
 		create(ArtikelstammHelper.createUUID(cummulatedVersion, type, gtin, phar));
+		
+		// fix pharmacode length < 7 chars
+		String pharmacode = (phar != null) ? String.format("%07d", phar) : "0000000";
+		
 		set(new String[] {
 			FLD_ITEM_TYPE, FLD_GTIN, FLD_PHAR, FLD_DSCR, FLD_ADDDSCR, FLD_CUMMULATED_VERSION,
 			FLD_BLACKBOXED
-		}, type.name(), gtin, (phar != null) ? phar.toString() : "", dscr, addscr,
-			cummulatedVersion + "", StringConstants.ZERO);
+		}, type.name(), gtin, pharmacode, dscr, addscr, cummulatedVersion + "",
+			StringConstants.ZERO);
 	}
 	
 	// -------------------------------------------------
@@ -592,4 +596,29 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		return (get(FLD_LPPV).equals(StringConstants.ONE)) ? true : false;
 	}
 	
+	public int getVerpackungseinheit(){
+		try {
+			int value = Integer.parseInt(get(FLD_PKG_SIZE));
+			return value;
+		} catch (NumberFormatException nfe) {
+			return 0;
+		}
+	}
+	
+	public void setVerpackungseinheit(int vpe){
+		set(FLD_PKG_SIZE, vpe + "");
+	}
+	
+	public int getVerkaufseinheit(){
+		try {
+			int value = Integer.parseInt(get(VERKAUFSEINHEIT));
+			return value;
+		} catch (NumberFormatException nfe) {
+			return 0;
+		}
+	}
+	
+	public void setVerkaufseinheit(int vse){
+		set(VERKAUFSEINHEIT, vse + "");
+	}
 }
