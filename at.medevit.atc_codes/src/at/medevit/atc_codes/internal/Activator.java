@@ -15,6 +15,9 @@ import java.io.File;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+import at.medevit.atc_codes.ATCCodeService;
+import at.medevit.atc_codes.ATCCodeServiceImpl;
+
 public class Activator implements BundleActivator {
 	
 	private static BundleContext ctx;
@@ -22,6 +25,7 @@ public class Activator implements BundleActivator {
 	@Override
 	public void start(BundleContext context) throws Exception{
 		this.ctx = context;
+		ctx.registerService(ATCCodeService.class, new ATCCodeServiceImpl(), null);
 	}
 	
 	@Override

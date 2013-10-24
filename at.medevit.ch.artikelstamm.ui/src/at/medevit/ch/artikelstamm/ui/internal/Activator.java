@@ -12,19 +12,25 @@ package at.medevit.ch.artikelstamm.ui.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
+
+import at.medevit.atc_codes.ATCCodeService;
 
 public class Activator implements BundleActivator {
 	
+	private ServiceTracker serviceTracker;
+	
 	@Override
 	public void start(BundleContext context) throws Exception{
-		// TODO Auto-generated method stub
+		ATCCodeServiceTracker customer = new ATCCodeServiceTracker(context);
+		serviceTracker = new ServiceTracker(context, ATCCodeService.class.getName(), customer);
+		serviceTracker.open();
 		
 	}
 	
 	@Override
 	public void stop(BundleContext context) throws Exception{
-		// TODO Auto-generated method stub
-		
+		serviceTracker.close();
 	}
 	
 }
