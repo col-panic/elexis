@@ -12,6 +12,7 @@ package at.medevit.ch.artikelstamm;
 
 import java.io.File;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -27,18 +28,32 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEM;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants.TYPE;
 
 public class ArtikelstammHelper {
+	private static Logger log = LoggerFactory.getLogger(ArtikelstammHelper.class);
+	
 	public static String PHARMA_XSD_LOCATION = "Elexis_Artikelstamm_v001.xsd";
+	private static URL schemaLocationUrl = null;
 	
 	private static SchemaFactory schemaFactory = SchemaFactory
 		.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 	static DateFormat dateFormat = new SimpleDateFormat("ddMMyy");
 	public static DateFormat monthAndYearWritten = new SimpleDateFormat("MMM yyyy");
+	
+	static {
+		try {
+			schemaLocationUrl =
+				new URL("platform:/plugin/at.medevit.ch.artikelstamm/lib/" + PHARMA_XSD_LOCATION);
+		} catch (MalformedURLException e) {
+			log.error("Error resolving Artikelstamm schema", e);
+		}
+	}
 	
 	/**
 	 * 
@@ -100,21 +115,14 @@ public class ArtikelstammHelper {
 	 */
 	public static ARTIKELSTAMM unmarshallFile(File xmlFile) throws JAXBException, SAXException{
 		Unmarshaller u = JAXBContext.newInstance(ARTIKELSTAMM.class).createUnmarshaller();
-		URL schemaLocation = ArtikelstammHelper.class.getResource(PHARMA_XSD_LOCATION);
-		Schema schema = schemaFactory.newSchema(schemaLocation);
+		Schema schema = schemaFactory.newSchema(schemaLocationUrl);
 		u.setSchema(schema);
 		return (ARTIKELSTAMM) u.unmarshal(xmlFile);
 	}
 	
 	public static void marshallToFileSystem(Object newData, File outputFile) throws SAXException,
 		JAXBException{
-		URL schemaLocation = null;
-		if (newData instanceof ARTIKELSTAMM) {
-			schemaLocation = ArtikelstammHelper.class.getResource(PHARMA_XSD_LOCATION);
-		} else {
-			throw new IllegalArgumentException();
-		}
-		Schema validationSchema = schemaFactory.newSchema(schemaLocation);
+		Schema validationSchema = schemaFactory.newSchema(schemaLocationUrl);
 		Marshaller m = JAXBContext.newInstance(ARTIKELSTAMM.class).createMarshaller();
 		m.setSchema(validationSchema);
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
