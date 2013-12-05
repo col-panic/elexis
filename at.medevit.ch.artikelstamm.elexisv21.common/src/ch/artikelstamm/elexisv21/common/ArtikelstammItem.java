@@ -276,7 +276,10 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	public Money getVKPreis(){
 		String value = get(FLD_PPUB);
 		if (value != null && !value.isEmpty()) {
-			return new Money(Double.parseDouble(value));
+			double dValue = Double.parseDouble(value);
+			// user defined prices are represented in negative
+			// values, we always need positive values however
+			return new Money(Math.abs(dValue));
 		}
 		
 		return MargePreference.calculateVKP(getEKPreis());
@@ -290,6 +293,17 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		String exfValue = get(FLD_PEXF);
 		if (exfValue != null && !exfValue.isEmpty()) {
 			return true;
+		}
+		return false;
+	}
+	
+	public boolean isUserDefinedPrice(){
+		String value = get(FLD_PPUB);
+		if (value != null && !value.isEmpty()) {
+			double pricePub = Double.parseDouble(value);
+			boolean result = (pricePub < 0);
+			System.out.println(result);
+			return result;
 		}
 		return false;
 	}
@@ -536,6 +550,13 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 	@Override
 	public Double getPublicPrice(){
 		return getVKPreis().doubleValue();
+	}
+	
+	@Override
+	public void setPublicPrice(Double amount){
+		if (amount < 0)
+			throw new IllegalArgumentException("No negative values allowed");
+		set(FLD_PPUB, "-" + amount);
 	}
 	
 	@Override
