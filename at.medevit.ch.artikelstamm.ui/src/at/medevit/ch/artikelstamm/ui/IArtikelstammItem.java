@@ -62,6 +62,13 @@ public interface IArtikelstammItem {
 	public Double getPublicPrice();
 	
 	/**
+	 * set the public price, and automatically defines the article as {@link #isUserDefinedPrice()}
+	 * 
+	 * @param amount
+	 */
+	public void setPublicPrice(Double amount);
+	
+	/**
 	 * @return <code>true</code> if the article is part of the Spezialitaetenliste
 	 */
 	public boolean isInSLList();
@@ -115,4 +122,8 @@ public interface IArtikelstammItem {
 	 */
 	public boolean isCalculatedPrice();
 	
+	/**
+	 * @return whether this price is set by the user
+	 */
+	public boolean isUserDefinedPrice();
 }

@@ -22,6 +22,8 @@ import org.eclipse.jface.fieldassist.ControlDecoration;
 import org.eclipse.jface.fieldassist.FieldDecoration;
 import org.eclipse.jface.fieldassist.FieldDecorationRegistry;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -31,6 +33,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.wb.swt.ResourceManager;
 import org.eclipse.wb.swt.SWTResourceManager;
 
 import at.medevit.atc_codes.ATCCode;
@@ -48,7 +51,7 @@ public class DetailComposite extends Composite {
 	private Label lblGTIN;
 	private Label lblHERSTELLER;
 	private Label lblEXFACTORYPRICE;
-	private Label lblPUBLICPRICE;
+	private Text txtPUBLICPRICE;
 	private Tree treeATC;
 	private Label lblAbgabekategorie;
 	private Label lblABGABEKATEGORIE;
@@ -62,6 +65,7 @@ public class DetailComposite extends Composite {
 	private Label lblLimitationstext;
 	private Text txtLIMITATIONTEXT;
 	private ControlDecoration controlDecoIsCalculatedPPUB;
+	private Button btnUserDefinedPrice;
 	
 	public DetailComposite(Composite parent, int style){
 		super(parent, style);
@@ -104,22 +108,22 @@ public class DetailComposite extends Composite {
 		
 		Group grpPackungsgroessenPreise = new Group(this, SWT.NONE);
 		grpPackungsgroessenPreise.setText("Preis");
-		grpPackungsgroessenPreise.setLayout(new GridLayout(6, false));
+		grpPackungsgroessenPreise.setLayout(new GridLayout(7, false));
 		grpPackungsgroessenPreise.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
 			1));
 		Label lblExFactoryPreis = new Label(grpPackungsgroessenPreise, SWT.NONE);
 		lblExFactoryPreis.setText("Ex-Factory");
 		
-		lblEXFACTORYPRICE = new Label(grpPackungsgroessenPreise, SWT.NONE);
+		lblEXFACTORYPRICE = new Label(grpPackungsgroessenPreise, SWT.BORDER);
 		lblEXFACTORYPRICE.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
 		Label lblPublicPrice = new Label(grpPackungsgroessenPreise, SWT.NONE);
 		lblPublicPrice.setText("Publikumspreis");
 		
-		lblPUBLICPRICE = new Label(grpPackungsgroessenPreise, SWT.NONE);
-		lblPUBLICPRICE.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		txtPUBLICPRICE = new Text(grpPackungsgroessenPreise, SWT.BORDER);
+		txtPUBLICPRICE.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		
-		controlDecoIsCalculatedPPUB = new ControlDecoration(lblPUBLICPRICE, SWT.LEFT | SWT.TOP);
+		controlDecoIsCalculatedPPUB = new ControlDecoration(txtPUBLICPRICE, SWT.LEFT | SWT.TOP);
 		controlDecoIsCalculatedPPUB.setDescriptionText("Preis wurde mittels Marge kalkuliert!");
 		FieldDecoration fieldDecoration =
 			FieldDecorationRegistry.getDefault().getFieldDecoration(
@@ -132,6 +136,23 @@ public class DetailComposite extends Composite {
 		
 		lblSELBSTBEHALT = new Label(grpPackungsgroessenPreise, SWT.NONE);
 		lblSELBSTBEHALT.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		btnUserDefinedPrice = new Button(grpPackungsgroessenPreise, SWT.FLAT | SWT.CHECK);
+		btnUserDefinedPrice.setToolTipText("Benutzerdefinierter Preis");
+		btnUserDefinedPrice.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+		btnUserDefinedPrice.setImage(ResourceManager.getPluginImage(
+			"at.medevit.ch.artikelstamm.ui", "rsc/icons/money--pencil.png"));
+		btnUserDefinedPrice.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e){
+				// once selected, it stays selected
+				btnUserDefinedPrice.setSelection(true);
+				
+				IArtikelstammItem ai = (IArtikelstammItem) item.getValue();
+				ai.setPublicPrice(ai.getPublicPrice());
+				txtPUBLICPRICE.setEditable(true);
+			}
+		});
 		
 		Group grepATCCode = new Group(this, SWT.NONE);
 		grepATCCode.setLayout(new GridLayout(1, false));
@@ -268,13 +289,15 @@ public class DetailComposite extends Composite {
 		bindingContext.bindValue(observeTextLblEXFACTORYPRICEObserveWidget,
 			itemExFactoryPriceObserveDetailValue, null, null);
 		//
-		IObservableValue observeTextLblPUBLICPRICEObserveWidget =
-			WidgetProperties.text().observe(lblPUBLICPRICE);
+		IObservableValue observeTextLblPUBLICPRICEObserveWidget = WidgetProperties.text(new int[] {
+			SWT.Modify, SWT.FocusOut
+		}).observeDelayed(100, txtPUBLICPRICE);
 		IObservableValue itemPublicPriceObserveDetailValue =
-			PojoProperties.value(IArtikelstammItem.class, "publicPrice", double.class)
+			PojoProperties.value(IArtikelstammItem.class, "publicPrice", Double.class)
 				.observeDetail(item);
+		UpdateValueStrategy strategy_2 = new UpdateValueStrategy();
 		bindingContext.bindValue(observeTextLblPUBLICPRICEObserveWidget,
-			itemPublicPriceObserveDetailValue, null, null);
+			itemPublicPriceObserveDetailValue, strategy_2, null);
 		//
 		IObservableValue observeTextLblABGABEKATEGORIEObserveWidget =
 			WidgetProperties.text().observe(lblABGABEKATEGORIE);
@@ -346,6 +369,24 @@ public class DetailComposite extends Composite {
 		bindingContext.bindValue(observeSizeLblLIMITATIONTEXTObserveWidget,
 			observeTextLblLIMITATIONTEXTObserveWidget_1, new UpdateValueStrategy(
 				UpdateValueStrategy.POLICY_NEVER), strategy);
+		//
+		IObservableValue observeSelectionBtnUserDefinedPriceObserveWidget =
+			WidgetProperties.selection().observe(btnUserDefinedPrice);
+		IObservableValue itemCalculatedPriceObserveDetailValue =
+			PojoProperties.value(IArtikelstammItem.class, "userDefinedPrice", boolean.class)
+				.observeDetail(item);
+		bindingContext.bindValue(observeSelectionBtnUserDefinedPriceObserveWidget,
+			itemCalculatedPriceObserveDetailValue, new UpdateValueStrategy(
+				UpdateValueStrategy.POLICY_NEVER), null);
+		//
+		IObservableValue observeEditableTxtPUBLICPRICEObserveWidget =
+			WidgetProperties.editable().observe(txtPUBLICPRICE);
+		IObservableValue itemUserDefinedPriceObserveDetailValue =
+			PojoProperties.value(IArtikelstammItem.class, "userDefinedPrice", boolean.class)
+				.observeDetail(item);
+		bindingContext.bindValue(observeEditableTxtPUBLICPRICEObserveWidget,
+			itemUserDefinedPriceObserveDetailValue, new UpdateValueStrategy(
+				UpdateValueStrategy.POLICY_NEVER), null);
 		//
 		return bindingContext;
 	}
