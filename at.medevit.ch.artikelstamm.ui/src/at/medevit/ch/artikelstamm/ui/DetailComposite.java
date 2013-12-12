@@ -145,12 +145,10 @@ public class DetailComposite extends Composite {
 		btnUserDefinedPrice.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e){
-				// once selected, it stays selected
-				btnUserDefinedPrice.setSelection(true);
-				
 				IArtikelstammItem ai = (IArtikelstammItem) item.getValue();
 				ai.setPublicPrice(ai.getPublicPrice());
-				txtPUBLICPRICE.setEditable(true);
+				m_bindingContext.updateTargets();
+				txtPUBLICPRICE.setFocus();
 			}
 		});
 		

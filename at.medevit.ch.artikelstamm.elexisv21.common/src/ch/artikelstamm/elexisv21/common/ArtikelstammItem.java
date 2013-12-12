@@ -301,9 +301,8 @@ public class ArtikelstammItem extends Artikel implements IArtikelstammItem {
 		String value = get(FLD_PPUB);
 		if (value != null && !value.isEmpty()) {
 			double pricePub = Double.parseDouble(value);
-			boolean result = (pricePub < 0);
-			System.out.println(result);
-			return result;
+			// we need to differentiate -0.0 and 0.0
+			return Double.doubleToRawLongBits(pricePub) < 0;
 		}
 		return false;
 	}
