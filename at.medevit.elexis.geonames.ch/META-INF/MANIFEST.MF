@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Geonames Service Switzerland
+Bundle-SymbolicName: at.medevit.elexis.geonames.ch;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: medevit.at
+Require-Bundle: at.medevit.elexis.geonames;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/derby.jar,
+ lib/geoInfoCH.jar,
+ lib/commons-io-2.0.1.jar,
+ lib/derbytools.jar,
+ .

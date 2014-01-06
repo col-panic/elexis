@@ -1,0 +1,25 @@
+*{color:blue}Created by MEDEVIT Austria <office@medevit.at>*
+
+h1. Geo information CH creation package
+
+This package creates a derby geo information database containing the zip codes, names of communities and streets of Switzerland.
+The data used as a base for this is taken from the following sources:
+
+|_. Dataset |_. Source |
+| Communities | "MAT[CH]zip":https://match.post.ch/ - Data set PLZ Community |
+| Zip codes | "MAT[CH]zip":https://match.post.ch/ - Data set PLZ Plus 1 |
+| Streets | "BFS - Eidg. Gebäude- und Wohnungsregister":http://www.housing-stat.ch/de/dokumentation.html - Data set GWR Strassenliste, Ausgabe 01.12.2011 |
+
+h2. How to build an updated data set
+
+# Fetch the up-to-date files from the respective sources
+# Convert the retrieved files to UTF-8, e.g. by using the @preparePlzPlus.sh@ in @rsc/match-zip@
+# Modify the @buildDerbyDB.xml@ file to have the correct locations
+# Modify @Main.java@ to have the correct locations
+# Execute the @buildDerbyDB.xml@ to create an up-to-date @geoInfoCH.jar@ within the @lib@ directory
+# Use the derby database contained within @geoInfoCH.jar@ to integrate into your specific plug-ins
+
+h2. What to do with it?
+
+Currently the generated @geoInfoCH.jar@ is being integrated as geoname provider into the new contact plugin. Please see
+@at.medevit.elexis.geonames.ch@ for further information.

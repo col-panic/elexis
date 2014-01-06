@@ -1,0 +1,40 @@
+<!--
+Builds the database
+-->
+<project name="createDerbyDB" default="packdb" basedir=".">
+	<property name="sql.dir" value="${basedir}/rsc/sql" />
+	<property name="db.dir" value="${basedir}/db/geoInfoAT" />
+	<property name="lib.dir" value="${basedir}/lib" />
+
+	<path id="libraries">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+
+	<target name="cleandb">
+		<delete dir="${db.dir}" />
+	</target>
+
+	<target name="installdb" depends="cleandb">
+		<java fork="true" classname="org.apache.derby.tools.ij" classpathref="libraries">
+			<sysproperty key="ij.connection.myDB" value="jdbc:derby:${db.dir};create=true" />
+			<arg value="${sql.dir}/create_sql.txt" />
+		</java>
+	</target>
+
+	<target name="createDBImporter" description="Create a jar for the DB Importer" depends="installdb">
+		<jar jarfile="lib/DBImporter.jar" basedir="bin" />
+	</target>
+
+	<target name="executeDBImporter" depends="createDBImporter">
+		<java fork="true" classname="at.medevit.elexis.geonames.at.buildDB.Main" classpathref="libraries">
+			<sysproperty key="ij.connection.myDB" value="jdbc:derby:${db.dir};create=true" />
+			<arg value="" />
+		</java>
+	</target>
+
+	<target name="packdb" depends="executeDBImporter">
+		<jar destfile="${lib.dir}/geoInfoAT.jar" basedir="db" />
+	</target>
+</project>

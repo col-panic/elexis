@@ -1,0 +1,13 @@
+*{color:blue}Created by MEDEVIT Austria <office@medevit.at>*
+
+h1. Purpose of this plug-in
+
+This plug-in provides both an OSGi-geoname-service to other plug-ins and an extension point to register specific geoname information providers. Currently the following geoname information providers are available an register theiry information:
+
+This plug-in requires Elexis 3.
+
+|_. Country |_. Plug-In |
+| AT | @at.medevit.elexis.geonames.at@ |
+| CH | @at.medevit.elexis.geonames.ch@ |
+
+

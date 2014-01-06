@@ -1,0 +1,10 @@
+----------------------------------------------------------------
+Mon Jan 06 11:05:50 CET 2014:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.8.1.2 - (1095077): instance a816c00e-0143-6703-f7f2-000003db26a0 
+on database directory /Users/marco/Development/workspace-elexis-next/at.medevit.elexis.geonames.at.buildDB/db/geoInfoAT  with class loader sun.misc.Launcher$AppClassLoader@781fb069 
+Loaded from file:/Users/marco/Development/workspace-elexis-next/at.medevit.elexis.geonames.at.buildDB/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.7.0_45-b18
+user.dir=/Users/marco/Development/workspace-elexis-next/at.medevit.elexis.geonames.at.buildDB
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''

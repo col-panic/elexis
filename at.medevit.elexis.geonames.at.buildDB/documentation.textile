@@ -1,0 +1,63 @@
+*{color:blue}Created by MEDEVIT Austria <office@medevit.at>*
+
+h1. Geo information AT creation package
+
+This package creates a derby geo information database containing the zip codes, names of communities and streets of Austria.
+The data used as a base for this is taken from the following sources:
+
+|_. Dataset |_. Source |
+| Communities and ZIP codes | "STATISTIK AUSTRIA - Gemeinden":http://www.statistik.at/web_de/klassifikationen/regionale_gliederungen/gemeinden/index.html - Gemeinden sortiert nach Gemeindenamen mit Status und Postleitzahlen |
+| Streets | "STATISTIK AUSTRIA - Strassenverzeichnis Österreich":http://www.statistik.at/verzeichnis/strassenliste/gemplzstr.zip |
+
+h2. License
+
+According to Friederike Dvorak from "Register, Klassifikationen und Methodik" of Statistik Austria, the data is free to use, if no money is earned with it.
+
+Here is the relevant text, from an email request concerning licensing information:
+
+pre.. 
+Mail from 29. September 2011 11:41:17 MESZ
+
+Sehr geehrter Herr Descher
+Leider Melde ich mich erst jetzt, da ich auf Urlaub war.
+Natürlich können sie die Listen Einbinden in Ihre Datei, wenn sie mit dieser Datei keinen Handel betreiben
+
+Mit freundlichen Grüßen
+
+Friederike Dvorak
+Register, Klassifikationen und Methodik
+Guglgasse 13
+1110 Wien
+
+-----Ursprüngliche Nachricht-----
+Von: Marco Descher [mailto:***] 
+Gesendet: Dienstag, 20. September 2011 12:10
+An: DVORAK Friederike
+Betreff: Strassenliste Österreich
+
+Sehr geehrte Frau Dvorak, 
+
+für die freie open-source Software Elexis (www.elexis.ch) möchten wir gerne dem Anwender die Möglichkeit bieten basierend auf einer selektierten Ortschaft eine Liste der Strasse
+zum Zwecke der schnelleren Eingabe zu erhalten. Aufgrund Ihres Hinweises unter http://www.statistik.at/web_de/klassifikationen/regionale_gliederungen/strassen/index.html
+fragen wir hiermit an, ob eine solche Nutzung (Download der Daten und Einbindung in das Programm für nicht-kommerzielle Zwecke) gestattet ist.
+
+Vielen Dank für Ihre Hilfe und beste Grüße,
+Marco Descher
+
+h2. How to build an updated data set
+
+# Fetch the up-to-date files from the respective sources and put them into the correct locations
+#* Streets go into @rsc/gemplzstr/@
+#* Communities and zip goes into @rsc@
+# Convert the data source files to UTF-8, e.g. by using @iconv@
+#* On OS X this is for example done using @iconv -f ISO-8859-1 -t UTF-8 $i > $i.utf8@
+#* *{color:red}FAIL: This is NOT QUITE RIGHT YET!*
+# Modify the @buildDerbyDB.xml@ file to have the correct locations
+# Modify @Main.java@ to have the correct locations
+# Execute the @buildDerbyDB.xml@ to create an up-to-date @geoInfoAT.jar@ within the @lib@ directory
+# Use the derby database contained within @geoInfoAT.jar@ to integrate into your specific plug-ins
+
+h2. What to do with it?
+
+Currently the generated @geoInfoAT.jar@ is being integrated as geoname provider into the new contact plugin. Please see
+@at.medevit.elexis.geonames.at@ for further information.

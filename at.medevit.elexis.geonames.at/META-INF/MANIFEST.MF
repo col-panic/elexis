@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Geonames Service Austria
+Bundle-SymbolicName: at.medevit.elexis.geonames.at;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: medevit.at
+Require-Bundle: at.medevit.elexis.geonames;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/derby.jar,
+ lib/geoInfoAT.jar,
+ lib/derbytools.jar,
+ .

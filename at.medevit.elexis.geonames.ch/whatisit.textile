@@ -1,0 +1,5 @@
+*{color:blue}Created by MEDEVIT Austria <office@medevit.at>*
+
+h1. Purpose of this plug-in
+
+This plug-in extends the extension point @at.medevit.elexis.geonames.countryGeonameService@ to eventually include swiss geonames information into the @at.medevit.elexis.contacts@ content proposal provider.

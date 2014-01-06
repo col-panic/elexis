@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:strukturdaten xmlns:tns="http://www.help.gv.at/xml/strukturdaten/#20060626" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.help.gv.at/xml/strukturdaten/#20060626 authstrukturdaten.xsd ">
+<metadaten datenname="VERZEICHNIS" datenuri="http://www.statistik.at/web_de/statistiken/regionales/regionale_gliederungen/gemplzstr.xml">
+<letzteaenderung>2013-12-19T14:29:45</letzteaenderung>
+<datenstruktur>
+	<elementname datatype="CHAR(5)">GEMNR</elementname>
+	<elementname datatype="CHAR(50)">GEMNAM38</elementname>
+	<elementname datatype="CHAR(5)">OKZ</elementname>
+	<elementname datatype="CHAR(50)">ORTNAM</elementname>
+	<elementname datatype="CHAR(6)">SKZ</elementname>
+	<elementname datatype="VARCHAR(46)">STROFFI</elementname>
+	<elementname datatype="CHAR(4)">PLZNR</elementname>
+	<elementname datatype="CHAR(5)">GEMNR2</elementname>
+
+</datenstruktur>
+</metadaten>
+</tns:strukturdaten>
+
