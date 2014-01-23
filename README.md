@@ -3,6 +3,9 @@ elexis
 
 Elexis Praxisprogramm Development - www.elexis.info / www.elexis.ch
 
+ARTIKELSTAMM Development moved to https://github.com/elexis/elexis-3-base - this repo is for the old 2.1.7 build.
+
+
 Repository Content
 ==================
 Plug-In ID | Description
