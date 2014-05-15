@@ -17,6 +17,7 @@
         <xs:choice>
           <xs:element ref="ns1:SwissmedicNo5"/>
           <xs:element ref="ns1:SwissmedicNo8"/>
+          <xs:element ref="ns1:Pharmacode"/>
         </xs:choice>
         <xs:element ref="ns1:IT"/>
         <xs:element ref="ns1:LIMTYP"/>
@@ -30,6 +31,7 @@
       <xs:attribute name="DT" use="required"/>
     </xs:complexType>
   </xs:element>
+  <xs:element name="Pharmacode" type="xs:integer"/>
   <xs:element name="SwissmedicNo5" type="xs:integer"/>
   <xs:element name="SwissmedicNo8" type="xs:integer"/>
   <xs:element name="IT" type="xs:string"/>

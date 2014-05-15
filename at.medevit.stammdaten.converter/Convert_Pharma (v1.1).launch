@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/at.medevit.stammdaten.converter/src/at/medevit/stammdaten/converter/v11/ConvertV11.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="at.medevit.stammdaten.converter.v11.ConvertV11"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--oddb2xmlArticleFile  &quot;/Users/marco/Desktop/StammdatenNeu/oddb_article.xml&quot; --oddb2xmlLimitationFile  &quot;/Users/marco/Desktop/StammdatenNeu/oddb_limitation.xml&quot; --oddb2xmlProductFile &quot;/Users/marco/Desktop/StammdatenNeu/oddb_product.xml&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="at.medevit.stammdaten.converter"/>
+</launchConfiguration>

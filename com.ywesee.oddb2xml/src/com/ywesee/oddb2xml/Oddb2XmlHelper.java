@@ -59,7 +59,7 @@ public class Oddb2XmlHelper {
 	 */
 	public static LIM getItemInLimitationListBySwissmedicNo(List<LIM> limitList, BigInteger smno){
 		if (smno == null)
-			throw new IllegalArgumentException("swissmedic number is null");
+			return null;
 		if (limitList == null)
 			throw new IllegalArgumentException("limitlist is null");
 		
@@ -73,9 +73,12 @@ public class Oddb2XmlHelper {
 					limitationListCache.put(item.getSwissmedicNo5().toString(), item);
 				} else if (item.getSwissmedicNo8() != null) {
 					limitationListCache.put(item.getSwissmedicNo8().toString(), item);
+				} else if (item.getPharmacode() != null) {
+					limitationListCache.put(item.getPharmacode().toString(), item);
 				} else {
-					System.out.println("[ERROR] No SwissmediNo for limitation-item " + item
-						+ " found!");
+					System.out.println("[ERROR] No SwissmediNo for limitation-item "
+						+ item.getSwissmedicNo5() + "/" + item.getSwissmedicNo8() + "/"
+						+ item.getPharmacode() + " found!");
 				}
 			}
 		}

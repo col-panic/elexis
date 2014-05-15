@@ -2,6 +2,7 @@ package at.medevit.stammdaten.converter.enrich;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -12,6 +13,7 @@ import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
 import com.ywesee.oddb2xml.article.ART;
+import com.ywesee.oddb2xml.article.ARTBAR;
 import com.ywesee.oddb2xml.article.ARTICLE;
 import com.ywesee.oddb2xml.article.ARTPRI;
 import com.ywesee.oddb2xml.limitation.LIM;
@@ -43,8 +45,11 @@ public class Oddb2XmlArticleEnricher {
 		int overallCounter = 0;
 		int successCounter = 0;
 		for (ART article : oddb2xmlARTList) {
-			String ean13 = article.getARTBAR().getBC().toString();
-			ITEM item = ArtikelstammHelper.getItemInListByGTIN(artikelstamm, ean13);
+			String ean13 = resolveEAN(article);
+			ITEM item = null;
+			if (ean13 != null) {
+				item = ArtikelstammHelper.getItemInListByGTIN(artikelstamm, ean13);
+			}
 			if (item == null) {
 				// try to find by Pharmacode
 				item =
@@ -121,6 +126,17 @@ public class Oddb2XmlArticleEnricher {
 		System.out.println("[INFO] fail: " + failCounter + " success: " + successCounter
 			+ " total IGM: " + overallCounter + " total Artikelstamm-Pharma: "
 			+ artikelstamm.getITEM().size());
+	}
+	
+	private static String resolveEAN(ART article){
+		ARTBAR ab = article.getARTBAR();
+		if (ab != null) {
+			BigInteger bc = ab.getBC();
+			if (bc != null)
+				return bc.toString();
+		}
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
