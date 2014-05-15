@@ -16,6 +16,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEM;
+import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
 import com.ywesee.oddb2xml.article.ART;
@@ -263,6 +264,11 @@ public class Oddb2XmlArtikelstammGenerator {
 		nonPharma.setMONTH(creationDate.getMonth());
 		nonPharma.setYEAR(creationDate.getYear());
 		nonPharma.setLANG("de");
+		
+		pharma.setCUMULVER(ArtikelstammHelper.getCummulatedVersionNumber(creationDate.getYear(),
+			creationDate.getMonth()));
+		nonPharma.setCUMULVER(ArtikelstammHelper.getCummulatedVersionNumber(creationDate.getYear(),
+			creationDate.getMonth()));
 	}
 	
 	private static void unmarshallOddb2xmlFiles(File oddb2xmlArticleFileObj,
