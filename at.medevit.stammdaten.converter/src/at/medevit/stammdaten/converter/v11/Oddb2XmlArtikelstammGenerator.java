@@ -81,7 +81,7 @@ public class Oddb2XmlArtikelstammGenerator {
 				articleIds.add(uniqueId.toString());
 			}
 			
-			item.setDSCR(a.getDSCRD());
+			item.setDSCR(a.getDSCRD().trim());
 			item.setADDSCR(a.getQTY());
 			
 			if (a.getARTCOMP() != null) {

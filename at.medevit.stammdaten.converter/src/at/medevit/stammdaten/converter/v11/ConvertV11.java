@@ -3,6 +3,7 @@ package at.medevit.stammdaten.converter.v11;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -18,6 +19,7 @@ import org.apache.commons.cli.ParseException;
 import org.xml.sax.SAXException;
 
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM;
+import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEM;
 import at.medevit.ch.artikelstamm.ArtikelstammConstants;
 import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 
@@ -85,6 +87,8 @@ public class ConvertV11 {
 			Oddb2XmlArtikelstammGenerator.generate(pharma, nonPharma, oddb2xmlArticleFileObj,
 				oddb2xmlProductFileObj, oddb2xmlLimitationFileObj);
 			
+			filterOutVetMedArticles(pharma);
+			
 			File outputPharmaFile =
 				ArtikelstammHelper.determineOutputFileName(pharma, oddb2xmlArticleFileObj, null);
 			ArtikelstammHelper.marshallToFileSystem(pharma, outputPharmaFile);
@@ -105,6 +109,17 @@ public class ConvertV11 {
 		} catch (java.text.ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+	}
+
+	private static void filterOutVetMedArticles(ARTIKELSTAMM pharma){
+		List<ITEM> item = pharma.getITEM();
+		for (ITEM item2 : item.toArray(new ITEM[0])) {
+			if(item2.getATC()==null) continue;
+			if(item2.getATC().startsWith("Q")) {
+				System.out.println(item2.getGTIN() + ":Removing VetMed Article with ATC "+item2.getATC());
+				item.remove(item2);
+			}
 		}
 	}
 }
