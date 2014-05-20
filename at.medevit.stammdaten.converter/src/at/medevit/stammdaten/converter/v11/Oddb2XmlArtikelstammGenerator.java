@@ -81,7 +81,10 @@ public class Oddb2XmlArtikelstammGenerator {
 				articleIds.add(uniqueId.toString());
 			}
 			
-			item.setDSCR(a.getDSCRD().trim());
+			// limit to max 50 chars
+			int dscrdL = (a.getDSCRD().trim().length()>49) ? 50 : a.getDSCRD().trim().length();
+			item.setDSCR(a.getDSCRD().trim().substring(0, dscrdL));
+			
 			item.setADDSCR(a.getQTY());
 			
 			if (a.getARTCOMP() != null) {
