@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -191,37 +192,38 @@ public class Oddb2XmlArtikelstammGenerator {
 	 * set the price for the item; if we have official values go first. if e.g. we have PPUB and
 	 * ZURROSEPPUB, PPUB goes first
 	 * 
+	 * https://redmine.medelexis.ch/issues/3404 we do prefer zurRose prices now
+	 * 
 	 * @param a
 	 * @param item
 	 */
 	private static void setPriceInformation(ART a, ITEM item){
 		Double ppub = null;
 		Double pexf = null;
-		List<ARTPRI> prices = a.getARTPRI();
-		for (ARTPRI artpri : prices) {
+		
+		HashMap<String, ARTPRI> hmPrices = new HashMap<>();
+		for (ARTPRI artpri : a.getARTPRI()) {
 			if (artpri.getPTYP() == null || artpri.getPRICE() == null) {
 				System.out.println(item.getGTIN() + ": Invalid or no price information.");
 				continue;
 			}
-			
-			switch (artpri.getPTYP()) {
-			case "PPUB":
-				ppub = artpri.getPRICE().doubleValue();
-				break;
-			case "PEXF":
-				pexf = artpri.getPRICE().doubleValue();
-			case "ZURROSEPUB":
-				if (ppub == null)
-					ppub = artpri.getPRICE().doubleValue();
-				break;
-			case "ZURROSE":
-				if (pexf == null)
-					pexf = artpri.getPRICE().doubleValue();
-				break;
-			default:
-				break;
-			}
+			hmPrices.put(artpri.getPTYP(), artpri);
 		}
+		
+		// fetch public prices
+		if(hmPrices.containsKey("ZURROSEPUB")) {
+			ppub = hmPrices.get("ZURROSEPUB").getPRICE().doubleValue();
+		} else if (hmPrices.containsKey("PPUB")) {
+			ppub = hmPrices.get("PPUB").getPRICE().doubleValue();
+		} 
+		
+		// fetch ex-factory prices
+		if(hmPrices.containsKey("ZURROSE")) {
+			pexf = hmPrices.get("ZURROSE").getPRICE().doubleValue();
+		} else if (hmPrices.containsKey("PEXF")) {
+			pexf = hmPrices.get("PEXF").getPRICE().doubleValue();
+		} 
+		
 		if (ppub != null)
 			item.setPPUB(ppub);
 		if (pexf != null)
