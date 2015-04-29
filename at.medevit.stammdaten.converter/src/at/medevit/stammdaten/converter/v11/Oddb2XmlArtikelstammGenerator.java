@@ -37,7 +37,10 @@ public class Oddb2XmlArtikelstammGenerator {
 	
 	private static HashSet<String> articleIds = new HashSet<String>();
 	
+	private static final String SALECD_INACTIVE = "I";
+	
 	private static int collisions = 0;
+	private static int inactive = 0;
 	
 	public static void generate(ARTIKELSTAMM pharma, ARTIKELSTAMM nonPharma,
 		File oddb2xmlArticleFileObj, File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj)
@@ -53,15 +56,21 @@ public class Oddb2XmlArtikelstammGenerator {
 		
 		System.out.println("STATS Total " + oddb2xmlArticle.getART().size() + " / collisions "
 			+ collisions + " / pharma " + pharma.getITEM().size() + " / nonPharma "
-			+ nonPharma.getITEM().size());
-		
+			+ nonPharma.getITEM().size()+ " / inactive "+inactive);
 	}
 	
 	private static void populateFromOddb2Xml(ARTIKELSTAMM pharma, ARTIKELSTAMM nonPharma){
 		List<ART> articles = oddb2xmlArticle.getART();
 		for (ART a : articles) {
-			ARTIKELSTAMM.ITEM item = new ARTIKELSTAMM.ITEM();
+			String salecd = a.getSALECD();
+			if(SALECD_INACTIVE.equalsIgnoreCase(salecd)) {
+				inactive++;
+				System.out.println("Skipping inactive article "+a.getDSCRD()+" ("+a.getPHAR()+")");
+				continue;
+			}
 			
+			ARTIKELSTAMM.ITEM item = new ARTIKELSTAMM.ITEM();
+	
 			String phar = a.getPHAR();
 			String ean = "";
 			
