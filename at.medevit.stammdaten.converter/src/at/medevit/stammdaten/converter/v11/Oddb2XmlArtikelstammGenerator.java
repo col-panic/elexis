@@ -31,6 +31,14 @@ import com.ywesee.oddb2xml.product.PRODUCT;
 
 public class Oddb2XmlArtikelstammGenerator {
 	
+	/**
+	 * Exporting this tool requires to comment these lines in
+	 * {@link ArtikelstammHelper#marshallToFileSystem(Object, File)} 
+	 * Schema validationSchema =
+	 * 	schemaFactory.newSchema(schemaLocationUrl); 
+	 * m.setSchema(validationSchema);
+	 */
+	
 	private static ARTICLE oddb2xmlArticle;
 	private static LIMITATION oddb2xmlLimitations;
 	private static PRODUCT oddb2xmlProducts;
@@ -56,21 +64,21 @@ public class Oddb2XmlArtikelstammGenerator {
 		
 		System.out.println("STATS Total " + oddb2xmlArticle.getART().size() + " / collisions "
 			+ collisions + " / pharma " + pharma.getITEM().size() + " / nonPharma "
-			+ nonPharma.getITEM().size()+ " / inactive "+inactive);
+			+ nonPharma.getITEM().size() + " / inactive " + inactive);
 	}
 	
 	private static void populateFromOddb2Xml(ARTIKELSTAMM pharma, ARTIKELSTAMM nonPharma){
 		List<ART> articles = oddb2xmlArticle.getART();
 		for (ART a : articles) {
 			String salecd = a.getSALECD();
-			if(SALECD_INACTIVE.equalsIgnoreCase(salecd)) {
+			if (SALECD_INACTIVE.equalsIgnoreCase(salecd)) {
 				inactive++;
-				System.out.println("Skipping inactive article "+a.getDSCRD()+" ("+a.getPHAR()+")");
+				System.out.println("I: " + a.getDSCRD() + " (" + a.getPHAR() + ")");
 				continue;
 			}
 			
 			ARTIKELSTAMM.ITEM item = new ARTIKELSTAMM.ITEM();
-	
+			
 			String phar = a.getPHAR();
 			String ean = "";
 			
@@ -92,7 +100,7 @@ public class Oddb2XmlArtikelstammGenerator {
 			}
 			
 			// limit to max 50 chars
-			int dscrdL = (a.getDSCRD().trim().length()>49) ? 50 : a.getDSCRD().trim().length();
+			int dscrdL = (a.getDSCRD().trim().length() > 49) ? 50 : a.getDSCRD().trim().length();
 			item.setDSCR(a.getDSCRD().trim().substring(0, dscrdL));
 			
 			item.setADDSCR(a.getQTY());
@@ -220,18 +228,18 @@ public class Oddb2XmlArtikelstammGenerator {
 		}
 		
 		// fetch public prices
-		if(hmPrices.containsKey("ZURROSEPUB")) {
+		if (hmPrices.containsKey("ZURROSEPUB")) {
 			ppub = hmPrices.get("ZURROSEPUB").getPRICE().doubleValue();
 		} else if (hmPrices.containsKey("PPUB")) {
 			ppub = hmPrices.get("PPUB").getPRICE().doubleValue();
-		} 
+		}
 		
 		// fetch ex-factory prices
-		if(hmPrices.containsKey("ZURROSE")) {
+		if (hmPrices.containsKey("ZURROSE")) {
 			pexf = hmPrices.get("ZURROSE").getPRICE().doubleValue();
 		} else if (hmPrices.containsKey("PEXF")) {
 			pexf = hmPrices.get("PEXF").getPRICE().doubleValue();
-		} 
+		}
 		
 		if (ppub != null)
 			item.setPPUB(ppub);
