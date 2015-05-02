@@ -33,10 +33,8 @@ public class Oddb2XmlArtikelstammGenerator {
 	
 	/**
 	 * Exporting this tool requires to comment these lines in
-	 * {@link ArtikelstammHelper#marshallToFileSystem(Object, File)} 
-	 * Schema validationSchema =
-	 * 	schemaFactory.newSchema(schemaLocationUrl); 
-	 * m.setSchema(validationSchema);
+	 * {@link ArtikelstammHelper#marshallToFileSystem(Object, File)} Schema validationSchema =
+	 * schemaFactory.newSchema(schemaLocationUrl); m.setSchema(validationSchema);
 	 */
 	
 	private static ARTICLE oddb2xmlArticle;
@@ -113,14 +111,14 @@ public class Oddb2XmlArtikelstammGenerator {
 				}
 			}
 			
-			setPriceInformation(a, item);
-			
 			if (determineIfPharma(a)) {
 				amendPharmaFromOddb2XmlArticle(a, item);
 				pharma.getITEM().add(item);
 			} else {
 				nonPharma.getITEM().add(item);
 			}
+			
+			setPriceInformation(a, item);
 		}
 		
 	}
@@ -221,24 +219,42 @@ public class Oddb2XmlArtikelstammGenerator {
 		HashMap<String, ARTPRI> hmPrices = new HashMap<>();
 		for (ARTPRI artpri : a.getARTPRI()) {
 			if (artpri.getPTYP() == null || artpri.getPRICE() == null) {
-				System.out.println(item.getGTIN() + ": Invalid or no price information.");
+				System.out
+					.println("ERROR " + item.getGTIN() + ": Invalid or no price information.");
 				continue;
 			}
 			hmPrices.put(artpri.getPTYP(), artpri);
 		}
 		
-		// fetch public prices
-		if (hmPrices.containsKey("ZURROSEPUB")) {
-			ppub = hmPrices.get("ZURROSEPUB").getPRICE().doubleValue();
-		} else if (hmPrices.containsKey("PPUB")) {
-			ppub = hmPrices.get("PPUB").getPRICE().doubleValue();
-		}
-		
-		// fetch ex-factory prices
-		if (hmPrices.containsKey("ZURROSE")) {
-			pexf = hmPrices.get("ZURROSE").getPRICE().doubleValue();
-		} else if (hmPrices.containsKey("PEXF")) {
-			pexf = hmPrices.get("PEXF").getPRICE().doubleValue();
+		// #3645
+		if (item.isSLENTRY() != null && item.isSLENTRY()) {
+			if (hmPrices.containsKey("PPUB")) {
+				ppub = hmPrices.get("PPUB").getPRICE().doubleValue();
+			} else {
+				System.out.println("ERROR no PPUB for " + item.getDSCR() + " (" + item.getGTIN()
+					+ ")");
+			}
+			
+			if (hmPrices.containsKey("PEXF")) {
+				pexf = hmPrices.get("PEXF").getPRICE().doubleValue();
+			} else {
+				System.out.println("ERROR no PEXF for " + item.getDSCR() + " (" + item.getGTIN()
+					+ ")");
+			}
+		} else {
+			// fetch public prices
+			if (hmPrices.containsKey("ZURROSEPUB")) {
+				ppub = hmPrices.get("ZURROSEPUB").getPRICE().doubleValue();
+			} else if (hmPrices.containsKey("PPUB")) {
+				ppub = hmPrices.get("PPUB").getPRICE().doubleValue();
+			}
+			
+			// fetch ex-factory prices
+			if (hmPrices.containsKey("ZURROSE")) {
+				pexf = hmPrices.get("ZURROSE").getPRICE().doubleValue();
+			} else if (hmPrices.containsKey("PEXF")) {
+				pexf = hmPrices.get("PEXF").getPRICE().doubleValue();
+			}
 		}
 		
 		if (ppub != null)
