@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 import ch.elexis.data.Kontakt.statL;
+import ch.elexis.util.MFUList;
 
 public class HashMapBlobLoader {
 	public static void main(String[] args) throws IOException, ClassNotFoundException{
@@ -53,6 +54,10 @@ public class HashMapBlobLoader {
 			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
 				return statL.class.getName() +" "+e.getMessage();
 			} 
+		} else if (object instanceof MFUList) {
+			MFUList ml = (MFUList) object;
+			System.out.println("\t -> "+MFUList.class.getName());
+			return ts(ml.getAll());
 		}
 		return object.toString();
 	}
