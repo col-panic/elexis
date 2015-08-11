@@ -130,6 +130,8 @@ public class Oddb2XmlArtikelstammGenerator {
 				Oddb2XmlHelper
 					.getItemInProductListByGTIN(oddb2xmlProducts.getPRD(), item.getGTIN());
 			if (product != null) {
+				BigInteger prodno = product.getPRODNO();
+				if(prodno!=null) item.setPRODNO(prodno.toString());
 				// ATC
 				item.setATC(product.getATC());
 				// PKG_SIZE
@@ -200,6 +202,7 @@ public class Oddb2XmlArtikelstammGenerator {
 			}
 			// LIMITATION_TEXT
 			item.setLIMITATIONTEXT(limitation.getDSCRD());
+			item.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
 		}
 	}
 	
