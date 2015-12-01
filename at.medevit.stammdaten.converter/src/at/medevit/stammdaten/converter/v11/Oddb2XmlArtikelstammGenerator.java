@@ -145,7 +145,11 @@ public class Oddb2XmlArtikelstammGenerator {
 					}
 				
 				// GENCD
-				item.setGENERICTYPE(product.getGENCD());
+				String gencd = product.getGENCD();
+				// co-marketing article, requires artikelstamm update, will
+				// remove for the time being - 4194
+				gencd = ("C".equalsIgnoreCase(gencd)) ? null : gencd; 
+				item.setGENERICTYPE(gencd);
 				
 			} else {
 				System.out.println("[WARNING] No product for " + a.getPHAR() + "/" + a.getDSCRD()
