@@ -11,10 +11,12 @@ import java.util.zip.ZipInputStream;
 
 import ch.elexis.data.Kontakt.statL;
 import ch.elexis.util.MFUList;
+import ch.rgw.compress.CompEx;
+import ch.rgw.tools.StringTool;
 
 public class HashMapBlobLoader {
 	public static void main(String[] args) throws IOException, ClassNotFoundException{
-		if(args.length<1) {
+		if (args.length < 1) {
 			System.out.println("Usage: java -jar HashMapBlobLoader.jar ExtInfoBlobFile");
 			System.out.println("   where ExtInfoBlobFile - binary blob stored from ExtInfo DB");
 			return;
@@ -23,26 +25,33 @@ public class HashMapBlobLoader {
 		System.out.println("File is: " + args[0]);
 		FileInputStream fin = new FileInputStream(args[0]);
 		ZipInputStream zis = new ZipInputStream(fin);
-		zis.getNextEntry();
-		ObjectInputStream ois = new ObjectInputStream(zis);
-		Object readObject = ois.readObject();
-		Hashtable ht = (Hashtable) readObject;
-		Set keySet = ht.keySet();
-		for (Object object : keySet) {
-			System.out.println("[" + object + "]");
-			String val = ts(ht.get(object));
-			if(val!=null) {
-				System.out.println("\t "+ val);
+		if (zis.getNextEntry() != null) {
+			ObjectInputStream ois = new ObjectInputStream(zis);
+			Object readObject = ois.readObject();
+			Hashtable ht = (Hashtable) readObject;
+			Set keySet = ht.keySet();
+			for (Object object : keySet) {
+				System.out.println("[" + object + "]");
+				String val = ts(ht.get(object));
+				if (val != null) {
+					System.out.println("\t " + val);
+				}
 			}
+		} else {
+			zis.close();
+			FileInputStream fileInputStream = new FileInputStream(args[0]);
+			byte[] val = CompEx.expand(fileInputStream);
+			System.out.println(StringTool.createString(val));
+			fileInputStream.close();
 		}
 	}
-
+	
 	private static String ts(Object object){
-		if(object instanceof List) {
+		if (object instanceof List) {
 			List l = (List) object;
 			for (int i = 0; i < l.size(); i++) {
 				Object o = l.get(i);
-				System.out.println("\t "+i+"/"+l.size()+": "+ts(o));
+				System.out.println("\t " + i + "/" + l.size() + ": " + ts(o));
 			}
 			return null;
 		} else if (object instanceof statL) {
@@ -50,13 +59,14 @@ public class HashMapBlobLoader {
 			try {
 				Field declaredField = statL.class.getDeclaredField("v");
 				declaredField.setAccessible(true);
-				return statL.class.getName()+" "+declaredField.get(s);
-			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-				return statL.class.getName() +" "+e.getMessage();
-			} 
+				return statL.class.getName() + " " + declaredField.get(s);
+			} catch (NoSuchFieldException | SecurityException | IllegalArgumentException
+					| IllegalAccessException e) {
+				return statL.class.getName() + " " + e.getMessage();
+			}
 		} else if (object instanceof MFUList) {
 			MFUList ml = (MFUList) object;
-			System.out.println("\t -> "+MFUList.class.getName());
+			System.out.println("\t -> " + MFUList.class.getName());
 			return ts(ml.getAll());
 		}
 		return object.toString();
