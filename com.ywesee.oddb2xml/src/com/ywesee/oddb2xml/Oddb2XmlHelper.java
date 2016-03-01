@@ -101,7 +101,7 @@ public class Oddb2XmlHelper {
 				+ " elements");
 			productListCache = new HashMap<String, PRD>(productList.size());
 			for (PRD item : productList) {
-				if (item.getGTIN() != null) {
+				if (item.getGTIN() != null && item.getPRODNO()!=null) {
 					productListCache.put(item.getGTIN().toString(), item);
 				} else {
 					System.out.println("[ERROR] No GTIN for product-item " + item + " found!");
