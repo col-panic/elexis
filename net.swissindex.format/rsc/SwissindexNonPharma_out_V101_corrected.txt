@@ -1,5 +1,0 @@
-The SwissindexNonPharma_out_V101_corrected.xsd is a copy of the original SwissindexPharma_out_V101.xsd. It was corrected with the following
-adaptations to validate against the retrieved xml data:
-
-1. The availability of COMP.GLN information for an item is not fixed .. minBound 0 - maxBound 1
-2. The GTIN size may differ from the fixed number of 13 ciphers. (occurences of 8, 12 and 14 found) maxLength 14
