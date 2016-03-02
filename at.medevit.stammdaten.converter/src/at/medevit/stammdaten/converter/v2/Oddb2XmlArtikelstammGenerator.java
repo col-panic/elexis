@@ -103,7 +103,8 @@ public class Oddb2XmlArtikelstammGenerator {
 			
 			if (a.getARTBAR() != null) {
 				if (a.getARTBAR().getBC() != null) {
-					ean = a.getARTBAR().getBC().toString();
+					BigInteger eanBi = a.getARTBAR().getBC();
+					ean = String.format("%013d", eanBi);
 				}
 			}
 			
@@ -119,10 +120,10 @@ public class Oddb2XmlArtikelstammGenerator {
 			}
 			
 			// limit to max 50 chars
-			int dscrdL = (a.getDSCRD().trim().length() > 49) ? 50 : a.getDSCRD().trim().length();
-			item.setDSCR(a.getDSCRD().trim().substring(0, dscrdL));
-			
-			item.setADDSCR(a.getQTY());
+//			int dscrdL = (a.getDSCRD().trim().length() > 49) ? 50 : a.getDSCRD().trim().length();
+//			item.setDSCR(a.getDSCRD().trim().substring(0, dscrdL));
+			item.setDSCR(a.getDSCRD().trim());
+			item.setDSCRF(a.getDSCRF().trim());
 			
 			if (a.getARTCOMP() != null) {
 				if (a.getARTCOMP().getCOMPNO() != null) {
@@ -163,6 +164,29 @@ public class Oddb2XmlArtikelstammGenerator {
 					astammProduct.setPRODNO(prodno.toString());
 					astammProduct.setATC(product.getATC());
 					astammProduct.setDSCR("___~~MISSING~~__");
+					astammProduct.setDSCRF("___~~MISSING~~__");
+					
+					// LIMITATION
+					LIM limitation =
+						Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(oddb2xmlLimitations.getLIM(),
+							a.getSMNO());
+					if (limitation != null) {
+						LIMITATION astammLimitation = limitations.get(limitation.getLIMNAMEBAG());
+						if(astammLimitation==null) {
+							astammLimitation = new LIMITATION();
+							astammLimitation.setDSCR(limitation.getDSCRD().trim());
+							astammLimitation.setDSCRF(limitation.getDSCRF().trim());
+							astammLimitation.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
+							// LIMITATION_PTS
+							if (limitation.getLIMVAL() != null && limitation.getLIMVAL().length() > 0) {
+								astammLimitation.setLIMITATIONPTS(Integer.parseInt(limitation.getLIMVAL()));
+							}
+							limitations.put(limitation.getLIMNAMEBAG(), astammLimitation);
+						}
+						astammProduct.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
+					}
+					
+					
 					// TODO set text
 					products.put(prodno.toString(), astammProduct);
 				}
@@ -229,24 +253,7 @@ public class Oddb2XmlArtikelstammGenerator {
 			item.setNARCOTIC(true);
 		}
 		
-		// LIMITATION
-		LIM limitation =
-			Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(oddb2xmlLimitations.getLIM(),
-				a.getSMNO());
-		if (limitation != null) {
-			LIMITATION astammLimitation = limitations.get(limitation.getLIMNAMEBAG());
-			if(astammLimitation==null) {
-				astammLimitation = new LIMITATION();
-				astammLimitation.setLIMITATIONTEXT(limitation.getDSCRD().trim());
-				astammLimitation.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
-				// LIMITATION_PTS
-				if (limitation.getLIMVAL() != null && limitation.getLIMVAL().length() > 0) {
-					astammLimitation.setLIMITATIONPTS(Integer.parseInt(limitation.getLIMVAL()));
-				}
-				limitations.put(limitation.getLIMNAMEBAG(), astammLimitation);
-			}
-			item.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
-		}
+		
 	}
 	
 	/**
