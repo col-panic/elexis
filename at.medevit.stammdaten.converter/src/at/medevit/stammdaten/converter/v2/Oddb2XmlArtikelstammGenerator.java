@@ -177,7 +177,7 @@ public class Oddb2XmlArtikelstammGenerator {
 				Oddb2XmlHelper
 					.getItemInProductListByGTIN(oddb2xmlProducts.getPRD(), item.getGTIN());
 			if (product != null) {
-				BigInteger prodno = product.getPRODNO();
+				String prodno = product.getPRODNO();
 
 				assert(prodno!=null);
 				
