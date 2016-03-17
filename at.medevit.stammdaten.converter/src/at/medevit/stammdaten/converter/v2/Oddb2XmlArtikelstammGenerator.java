@@ -1,6 +1,7 @@
 package at.medevit.stammdaten.converter.v2;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -17,6 +19,7 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
+import com.ywesee.oddb2xml.Sequence;
 import com.ywesee.oddb2xml.article.ART;
 import com.ywesee.oddb2xml.article.ARTBAR;
 import com.ywesee.oddb2xml.article.ARTICLE;
@@ -45,8 +48,9 @@ public class Oddb2XmlArtikelstammGenerator {
 	
 	private static HashSet<String> articleIds = new HashSet<String>();
 	
-	private static HashMap<String, PRODUCT> products = new HashMap<String, PRODUCT>();
-	private static HashMap<String, LIMITATION> limitations = new HashMap<String, LIMITATION>();
+	private static Map<String, PRODUCT> products = new HashMap<String, PRODUCT>();
+	private static Map<String, LIMITATION> limitations = new HashMap<String, LIMITATION>();
+	private static Map<String, Sequence> sequences = new HashMap<String, Sequence>();
 	
 	private static final String SALECD_INACTIVE = "I";
 	
@@ -54,17 +58,18 @@ public class Oddb2XmlArtikelstammGenerator {
 	private static int inactive = 0;
 	
 	public static void generate(ARTIKELSTAMM astamm,
-		File oddb2xmlArticleFileObj, File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj)
-		throws JAXBException, DatatypeConfigurationException, ParseException{
+		File oddb2xmlArticleFileObj, File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj, File oddb2xmlSequencesFileObj)
+		throws JAXBException, DatatypeConfigurationException, ParseException, IOException{
 		
 		System.out.println("Unmarshalling oddb2xml files");
 		unmarshallOddb2xmlFiles(oddb2xmlArticleFileObj, oddb2xmlProductFileObj,
-			oddb2xmlLimitationFileObj);
+			oddb2xmlLimitationFileObj, oddb2xmlSequencesFileObj);
 		System.out.println("Setting artikelstamm headers");
 		setArtikelstammHeaderInfo(astamm);
 		System.out.println("Import oddb2xml_article");
 		populateFromOddb2Xml(astamm);
 		System.out.println("Adding products...");
+		populateProductNames(astamm);
 		populateProducts(astamm);
 		System.out.println("Adding limitations...");
 		populateLimitations(astamm);
@@ -72,17 +77,35 @@ public class Oddb2XmlArtikelstammGenerator {
 		System.out.println("STATS: collisions: "+collisions +"/ inactive "+inactive);
 	}
 	
-	private static void populateLimitations(ARTIKELSTAMM astamm){
-		Collection<LIMITATION> values = limitations.values();
-		for (LIMITATION limitation : values) {
-			astamm.getLIMITATIONS().getLIMITATION().add(limitation);
-		}
+	private static void populateProductNames(ARTIKELSTAMM astamm){
+		Collection<PRODUCT> values = products.values();
+		for (PRODUCT product : values) {
+			String prodno = product.getPRODNO();
+			if(prodno.length()==7) {
+				if(!sequences.containsKey(prodno)) {
+					continue;
+				} else {
+					Sequence seq = sequences.get(prodno);
+					product.setDSCR(seq.getDscr());
+					product.setDSCRF(seq.getDcsrf());
+				}
+			} else {
+				System.out.println("PRODNO length is NOT 7 chars: "+product.getPRODNO());
+			}
+		}	
 	}
-
+	
 	private static void populateProducts(ARTIKELSTAMM astamm){
 		Collection<PRODUCT> values = products.values();
 		for (PRODUCT product : values) {
 			astamm.getPRODUCTS().getPRODUCT().add(product);
+		}
+	}
+
+	private static void populateLimitations(ARTIKELSTAMM astamm){
+		Collection<LIMITATION> values = limitations.values();
+		for (LIMITATION limitation : values) {
+			astamm.getLIMITATIONS().getLIMITATION().add(limitation);
 		}
 	}
 
@@ -354,10 +377,11 @@ public class Oddb2XmlArtikelstammGenerator {
 	}
 	
 	private static void unmarshallOddb2xmlFiles(File oddb2xmlArticleFileObj,
-		File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj) throws JAXBException{
+		File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj, File oddb2xmlSequencesFileObj) throws JAXBException, IOException{
 		oddb2xmlArticle = (ARTICLE) Oddb2XmlHelper.unmarshallFile(oddb2xmlArticleFileObj);
 		oddb2xmlLimitations = (com.ywesee.oddb2xml.limitation.LIMITATION) Oddb2XmlHelper.unmarshallFile(oddb2xmlLimitationFileObj);
 		oddb2xmlProducts = (com.ywesee.oddb2xml.product.PRODUCT) Oddb2XmlHelper.unmarshallFile(oddb2xmlProductFileObj);
+		sequences = Oddb2XmlHelper.unmarshallSequences(oddb2xmlSequencesFileObj);
 	}
 	
 }

@@ -10,10 +10,19 @@
  ******************************************************************************/
 package com.ywesee.oddb2xml;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -38,10 +47,9 @@ public class Oddb2XmlHelper {
 	 */
 	public static Object unmarshallFile(File xmlFile) throws JAXBException{
 		System.out.println("[INFO] Trying to unmarshall " + xmlFile);
-		Unmarshaller u =
-			JAXBContext.newInstance(ARTICLE.class, LIMITATION.class, PRODUCT.class)
-				.createUnmarshaller();
-		
+		Unmarshaller u = JAXBContext.newInstance(ARTICLE.class, LIMITATION.class, PRODUCT.class)
+			.createUnmarshaller();
+			
 		// Schema schema = sf.newSchema(validationSchema);
 		// u.setSchema( schema );
 		
@@ -62,11 +70,11 @@ public class Oddb2XmlHelper {
 			throw new IllegalArgumentException("swissmedic number is null");
 		if (limitList == null)
 			throw new IllegalArgumentException("limitlist is null");
-		
+			
 		LIM ret = null;
 		if (limitationListCache == null) {
-			System.out.println("[INFO] Initializing limitationList HashMap with "
-				+ limitList.size() + " elements");
+			System.out.println("[INFO] Initializing limitationList HashMap with " + limitList.size()
+				+ " elements");
 			limitationListCache = new HashMap<String, LIM>(limitList.size());
 			for (LIM item : limitList) {
 				if (item.getSwissmedicNo5() != null) {
@@ -74,8 +82,8 @@ public class Oddb2XmlHelper {
 				} else if (item.getSwissmedicNo8() != null) {
 					limitationListCache.put(item.getSwissmedicNo8().toString(), item);
 				} else {
-					System.out.println("[ERROR] No SwissmediNo for limitation-item " + item
-						+ " found!");
+					System.out
+						.println("[ERROR] No SwissmediNo for limitation-item " + item + " found!");
 				}
 			}
 		}
@@ -97,11 +105,11 @@ public class Oddb2XmlHelper {
 	 */
 	public static PRD getItemInProductListByGTIN(List<PRD> productList, String gtin){
 		if (productListCache == null) {
-			System.out.println("[INFO] Initializing productList HashMap with " + productList.size()
-				+ " elements");
+			System.out.println(
+				"[INFO] Initializing productList HashMap with " + productList.size() + " elements");
 			productListCache = new HashMap<String, PRD>(productList.size());
 			for (PRD item : productList) {
-				if (item.getGTIN() != null && item.getPRODNO()!=null) {
+				if (item.getGTIN() != null && item.getPRODNO() != null) {
 					productListCache.put(item.getGTIN().toString(), item);
 				} else {
 					System.out.println("[ERROR] No GTIN for product-item " + item + " found!");
@@ -111,6 +119,16 @@ public class Oddb2XmlHelper {
 		if (productListCache.containsKey(gtin))
 			return productListCache.get(gtin);
 		return null;
+	}
+	
+	public static Map<String, Sequence> unmarshallSequences(File oddb2xmlSequencesFileObj)
+		throws IOException{
+		InputStream is = new FileInputStream(oddb2xmlSequencesFileObj);
+		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+			return br.lines().map(Sequence.mapToPerson)
+				.collect(Collectors.toMap(Sequence::getProdno, Function.identity()));
+		}
+		
 	}
 	
 }

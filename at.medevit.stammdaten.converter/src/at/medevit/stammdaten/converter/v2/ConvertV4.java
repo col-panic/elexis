@@ -1,6 +1,7 @@
 package at.medevit.stammdaten.converter.v2;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
@@ -31,6 +32,7 @@ public class ConvertV4 {
 	public static final String OPTION_ODDB2XML_ARTICLE_FILE = "oddb2xmlArticleFile";
 	public static final String OPTION_ODDB2XML_LIMITATION_FILE = "oddb2xmlLimitationFile";
 	public static final String OPTION_ODDB2XML_PRODUCT_FILE = "oddb2xmlProductFile";
+	public static final String OPTION_ODDB2XML_SEQUENCES_FILE = "oddb2xmlSequencesFile";
 	
 	static Option oddbArticleFileOption = OptionBuilder.withArgName(OPTION_ODDB2XML_ARTICLE_FILE)
 		.hasArg().withDescription("oddb2xml_article.xml file").create(OPTION_ODDB2XML_ARTICLE_FILE);
@@ -39,14 +41,17 @@ public class ConvertV4 {
 		.withDescription("oddb_limitation.xml file").create(OPTION_ODDB2XML_LIMITATION_FILE);
 	static Option oddbProductFileOption = OptionBuilder.withArgName(OPTION_ODDB2XML_PRODUCT_FILE)
 		.hasArg().withDescription("oddb_product.xml file").create(OPTION_ODDB2XML_PRODUCT_FILE);
+	static Option oddbSwissmedicSequencesFileOption = OptionBuilder.withArgName(OPTION_ODDB2XML_SEQUENCES_FILE)
+			.hasArg().withDescription("oddb2xml_swissmedic_sequences.csv file").create(OPTION_ODDB2XML_SEQUENCES_FILE);
 	
 	static DateFormat df = new SimpleDateFormat("ddMMyy");
 	
 	static String oddb2xmlArticleFileName = null;
 	static String oddb2xmlLimitationFileName = null;
 	static String oddb2xmlProductFileName = null;
+	static String oddb2xmlSequencesFileName = null;
 	
-	public static void main(String[] args){
+	public static void main(String[] args) throws IOException{
 		
 		System.out.println("---------------------------------------------");
 		System.out.println(ConvertV4.class.getName());
@@ -61,6 +66,7 @@ public class ConvertV4 {
 		options.addOption(oddbArticleFileOption);
 		options.addOption(oddbLimitationFileOption);
 		options.addOption(oddbProductFileOption);
+		options.addOption(oddbSwissmedicSequencesFileOption);
 		// create the parser
 		CommandLineParser parser = new GnuParser();
 		try {
@@ -78,6 +84,7 @@ public class ConvertV4 {
 			oddb2xmlArticleFileName = line.getOptionValue(OPTION_ODDB2XML_ARTICLE_FILE);
 			oddb2xmlLimitationFileName = line.getOptionValue(OPTION_ODDB2XML_LIMITATION_FILE);
 			oddb2xmlProductFileName = line.getOptionValue(OPTION_ODDB2XML_PRODUCT_FILE);
+			oddb2xmlSequencesFileName = line.getOptionValue(OPTION_ODDB2XML_SEQUENCES_FILE);
 		} catch (ParseException exp) {
 			// oops, something went wrong
 			System.err.println("Parsing failed.  Reason: " + exp.getMessage());
@@ -88,6 +95,7 @@ public class ConvertV4 {
 			File oddb2xmlArticleFileObj = new File(oddb2xmlArticleFileName);
 			File oddb2xmlLimitationFileObj = new File(oddb2xmlLimitationFileName);
 			File oddb2xmlProductFileObj = new File(oddb2xmlProductFileName);
+			File oddb2xmlSequencesFileObj = new File(oddb2xmlSequencesFileName);
 			
 			ARTIKELSTAMM astamm = new ARTIKELSTAMM();
 			astamm.setSETTYPE("F"); // full data-set
@@ -97,7 +105,7 @@ public class ConvertV4 {
 			astamm.setLIMITATIONS(new LIMITATIONS());
 			
 			Oddb2XmlArtikelstammGenerator.generate(astamm, oddb2xmlArticleFileObj,
-				oddb2xmlProductFileObj, oddb2xmlLimitationFileObj);
+				oddb2xmlProductFileObj, oddb2xmlLimitationFileObj, oddb2xmlSequencesFileObj);
 			
 			File outputFile =
 				ArtikelstammHelper.determineOutputFileName(astamm, oddb2xmlArticleFileObj, null);
