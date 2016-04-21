@@ -185,8 +185,8 @@ public class Oddb2XmlArtikelstammGenerator {
 					astammProduct = new PRODUCT();
 					astammProduct.setPRODNO(prodno.toString());
 					astammProduct.setATC(product.getATC());
-					astammProduct.setDSCR("___~~MISSING~~__");
-					astammProduct.setDSCRF("___~~MISSING~~__");
+					astammProduct.setDSCR((product.getDSCRD()!=null) ? product.getDSCRD() : "___~~MISSING~~__");
+					astammProduct.setDSCRF((product.getDSCRF()!=null) ? product.getDSCRF() : "___~~MISSING~~__");
 					
 					// LIMITATION
 					LIM limitation = Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(
