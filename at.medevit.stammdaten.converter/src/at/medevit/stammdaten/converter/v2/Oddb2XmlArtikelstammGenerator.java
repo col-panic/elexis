@@ -27,6 +27,8 @@ import com.ywesee.oddb2xml.article.ARTPRI;
 import com.ywesee.oddb2xml.limitation.LIM;
 import com.ywesee.oddb2xml.product.PRD;
 
+import at.medevit.atc_codes.ATCCode;
+import at.medevit.atc_codes.internal.ATCCodes;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEMS.ITEM;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEMS.ITEM.COMP;
@@ -187,6 +189,13 @@ public class Oddb2XmlArtikelstammGenerator {
 					astammProduct.setATC(product.getATC());
 					astammProduct.setDSCR((product.getDSCRD()!=null) ? product.getDSCRD() : "___~~MISSING~~__");
 					astammProduct.setDSCRF((product.getDSCRF()!=null) ? product.getDSCRF() : "___~~MISSING~~__");
+					
+					if (product.getATC() != null) {
+						ATCCode atcCode = ATCCodes.getInstance().getATCCode(product.getATC());
+						if (atcCode != null && atcCode.level == 5) {
+							astammProduct.setSUBSTANCE(atcCode.name_german);
+						}
+					}
 					
 					// LIMITATION
 					LIM limitation = Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(
