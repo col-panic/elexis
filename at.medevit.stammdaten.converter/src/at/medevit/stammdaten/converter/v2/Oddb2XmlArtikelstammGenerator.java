@@ -20,6 +20,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
 import com.ywesee.oddb2xml.Sequence;
+import com.ywesee.oddb2xml.Sequence.SequenceItem;
 import com.ywesee.oddb2xml.article.ART;
 import com.ywesee.oddb2xml.article.ARTBAR;
 import com.ywesee.oddb2xml.article.ARTICLE;
@@ -224,23 +225,39 @@ public class Oddb2XmlArtikelstammGenerator {
 				
 				item.setPRODNO(prodno.toString());
 				
-				// PKG_SIZE
-				if (product.getPackGrSwissmedic() != null) {
-					try {
-						int value = Integer.parseInt(product.getPackGrSwissmedic());
-						item.setPKGSIZE(value);
-					} catch (NumberFormatException nfe) {
-						System.out.println(item.getGTIN() + ": Invalid number string "
-							+ product.getPackGrSwissmedic() + " in Product/PackGrSwissmedic");
-					}
-					
-					if (product.getEinheitSwissmedic() != null) {
-						item.setPKGSIZESTRING(product.getPackGrSwissmedic()+" "+product.getEinheitSwissmedic());
+				String measure = null;
+				Sequence sequence = sequences.get(prodno.toString());
+				if (sequence != null) {
+					SequenceItem sequenceItem = sequence.getSequenceItems().get(item.getGTIN());
+					if (sequenceItem != null) {
+						measure = sequenceItem.getMunit();
 					}
 				}
 				
-				if (product.getEinheitSwissmedic() != null) {
-					item.setMEASURE(product.getEinheitSwissmedic());
+				if (measure == null && product.getEinheitSwissmedic() != null) {
+					measure = product.getEinheitSwissmedic();
+				}
+				
+				item.setMEASURE(measure);
+				
+				// PKG_SIZE
+				if (product.getPackGrSwissmedic() != null) {
+					if (measure != null) {
+						item.setPKGSIZESTRING(product.getPackGrSwissmedic() + " " + measure);
+					} else {
+						try {
+							int value = Integer.parseInt(product.getPackGrSwissmedic());
+							item.setPKGSIZE(value);
+						} catch (NumberFormatException nfe) {
+							System.out.println(item.getGTIN() + ": Invalid number string "
+								+ product.getPackGrSwissmedic() + " in Product/PackGrSwissmedic");
+						}
+						
+						if (product.getEinheitSwissmedic() != null) {
+							item.setPKGSIZESTRING(product.getPackGrSwissmedic() + " "
+								+ product.getEinheitSwissmedic());
+						}
+					}
 				}
 				
 				// GENCD
