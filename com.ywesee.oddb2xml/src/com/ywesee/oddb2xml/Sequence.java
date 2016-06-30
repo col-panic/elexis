@@ -36,7 +36,7 @@ public class Sequence {
 		return sequenceItems;
 	}
 	
-	public static Function<String, Sequence> mapToPerson = (line) -> {
+	public static Function<String, Sequence> mapToSequence = (line) -> {
 		Sequence seq = null;
 		
 		String[] p = line.split(";", Integer.MAX_VALUE);
@@ -64,7 +64,9 @@ public class Sequence {
 	};
 	
 	public static class SequenceItem {
+		// article name
 		String desc1;
+		// product name
 		String desc2;
 		String galenicForm;
 		String gtin;

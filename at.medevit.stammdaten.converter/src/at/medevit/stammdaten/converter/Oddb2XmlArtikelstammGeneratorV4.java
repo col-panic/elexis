@@ -1,4 +1,4 @@
-package at.medevit.stammdaten.converter.v2;
+package at.medevit.stammdaten.converter;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,11 +12,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.omg.PortableInterceptor.NON_EXISTENT;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
 import com.ywesee.oddb2xml.Sequence;
@@ -37,7 +41,7 @@ import at.medevit.ch.artikelstamm.ARTIKELSTAMM.LIMITATIONS.LIMITATION;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.PRODUCTS.PRODUCT;
 import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 
-public class Oddb2XmlArtikelstammGenerator {
+public class Oddb2XmlArtikelstammGeneratorV4 {
 	
 	/**
 	 * Exporting this tool requires to comment these lines in
@@ -49,21 +53,20 @@ public class Oddb2XmlArtikelstammGenerator {
 	private static com.ywesee.oddb2xml.limitation.LIMITATION oddb2xmlLimitations;
 	private static com.ywesee.oddb2xml.product.PRODUCT oddb2xmlProducts;
 	
-	private static HashSet<String> articleIds = new HashSet<String>();
-	
+	private static Map<String, ART> oddbArticlesMap = new HashMap<String, ART>();
 	private static Map<String, PRODUCT> products = new HashMap<String, PRODUCT>();
 	private static Map<String, LIMITATION> limitations = new HashMap<String, LIMITATION>();
 	private static Map<String, Sequence> sequences = new HashMap<String, Sequence>();
 	
+	private static Set<String> inactivePharmaGtin = new HashSet<String>();
+	
 	private static final String SALECD_INACTIVE = "I";
 	
-	private static int collisions = 0;
-	private static int inactive = 0;
 	private static int pharma = 0;
 	private static int pharma_inactive = 0;
 	private static int nonpharma = 0;
 	private static int nonpharma_inactive = 0;
-	
+
 	public static void generate(ARTIKELSTAMM astamm, File oddb2xmlArticleFileObj,
 		File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj, File oddb2xmlSequencesFileObj)
 		throws JAXBException, DatatypeConfigurationException, ParseException, IOException{
@@ -73,68 +76,136 @@ public class Oddb2XmlArtikelstammGenerator {
 			oddb2xmlLimitationFileObj, oddb2xmlSequencesFileObj);
 		System.out.println("Setting artikelstamm headers");
 		setArtikelstammHeaderInfo(astamm);
-		System.out.println("Import oddb2xml_article");
-		populateFromOddb2Xml(astamm);
-		System.out.println("Adding products...");
-		populateProductNames(astamm);
-		populateProducts(astamm);
-		System.out.println("Adding limitations...");
-		populateLimitations(astamm);
-		System.out.println("PHARMA: " + pharma + " NON-PHARMA: " + nonpharma);
+		System.out.println("Import pharma articles from oddb_sequences");
+		populatePharmaWoDataAndProducts(astamm);
+		System.out.println("Import non-pharma articles from oddb_article");
+		populateNonPharmaWoData(astamm);
+		System.out.println("Enrich ITEM information");
+		enrichItemData(astamm);
+		System.out.println("Ammend LIMITATION information");
+		amendLimitationInformation(astamm);
+		
+		System.out.println("PHARMA: "+pharma+" NON-PHARMA: "+nonpharma);
 		System.out.println("PHARMA I: " + pharma_inactive + " NON-PHARMA I: " + nonpharma_inactive);
-		System.out.println("STATS: collisions: " + collisions + "/ inactive " + inactive);
 	}
 	
-	private static void populateProductNames(ARTIKELSTAMM astamm){
-		Collection<PRODUCT> values = products.values();
-		for (PRODUCT product : values) {
-			String prodno = product.getPRODNO();
-			if (prodno.length() == 7) {
-				if (!sequences.containsKey(prodno)) {
-					continue;
-				} else {
-					Sequence seq = sequences.get(prodno);
-					product.setDSCR(seq.getDscr());
-					product.setDSCRF(seq.getDcsrf());
+	private static void amendLimitationInformation(ARTIKELSTAMM astamm){
+		List<ITEM> items = astamm.getITEMS().getITEM();
+		for (ITEM item : items) {
+			ART art = oddbArticlesMap.get(item.getGTIN());
+			if (art == null || art.getSMNO() == null) {
+				continue;
+			}
+			
+			LIM limitation = Oddb2XmlHelper
+				.getItemInLimitationListBySwissmedicNo(oddb2xmlLimitations.getLIM(), art.getSMNO());
+			if (limitation != null) {
+				LIMITATION astammLimitation = limitations.get(limitation.getLIMNAMEBAG());
+				if (astammLimitation == null) {
+					astammLimitation = new LIMITATION();
+					astammLimitation.setDSCR(limitation.getDSCRD().trim());
+					astammLimitation.setDSCRF(limitation.getDSCRF().trim());
+					astammLimitation.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
+					// LIMITATION_PTS
+					if (limitation.getLIMVAL() != null && limitation.getLIMVAL().length() > 0) {
+						astammLimitation.setLIMITATIONPTS(Integer.parseInt(limitation.getLIMVAL()));
+					}
+					limitations.put(limitation.getLIMNAMEBAG(), astammLimitation);
 				}
-			} else {
-				System.out.println("PRODNO length is NOT 7 chars: " + product.getPRODNO());
+				
+				List<PRODUCT> products = astamm.getPRODUCTS().getPRODUCT();
+				for (PRODUCT product : products) {
+					if (product.getPRODNO().equals(item.getPRODNO())) {
+						product.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
+					}
+				}
 			}
 		}
-	}
-	
-	private static void populateProducts(ARTIKELSTAMM astamm){
-		Collection<PRODUCT> values = products.values();
-		for (PRODUCT product : values) {
-			astamm.getPRODUCTS().getPRODUCT().add(product);
-		}
-	}
-	
-	private static void populateLimitations(ARTIKELSTAMM astamm){
+		
 		Collection<LIMITATION> values = limitations.values();
 		for (LIMITATION limitation : values) {
 			astamm.getLIMITATIONS().getLIMITATION().add(limitation);
 		}
 	}
 	
-	private static void populateFromOddb2Xml(ARTIKELSTAMM astamm){
+	private static void populatePharmaWoDataAndProducts(ARTIKELSTAMM astamm){
+		Map<String, PRD> oddbProductsMap = new HashMap<String, PRD>();
+		List<PRD> products = oddb2xmlProducts.getPRD();
+		for (PRD product : products) {
+			oddbProductsMap.put(product.getPRODNO(), product);
+		}
+		
+		Set<Entry<String, Sequence>> entrySet = sequences.entrySet();
+		for (Entry<String, Sequence> entry : entrySet) {
+			Sequence product = entry.getValue();
+			
+			PRODUCT p = new PRODUCT();
+			p.setDSCR(product.getDscr());
+			p.setDSCRF("___~~MISSING~~__");
+			p.setPRODNO(product.getProdno());
+			
+			PRD prd = oddbProductsMap.get(p.getPRODNO());
+			if (prd != null) {
+				p.setATC(prd.getATC());
+				if (prd.getATC() != null) {
+					ATCCode atcCode = ATCCodes.getInstance().getATCCode(prd.getATC());
+					if (atcCode != null && atcCode.level == 5) {
+						p.setSUBSTANCE(atcCode.name_german);
+					}
+				}
+			}
+			
+			astamm.getPRODUCTS().getPRODUCT().add(p);
+			
+			Map<String, SequenceItem> articles = product.getSequenceItems();
+			for (SequenceItem article : articles.values()) {
+				ITEM item = new ITEM();
+				item.setPRODNO(product.getProdno());
+				item.setPHARMATYPE("P");
+				item.setDSCR(article.getDesc1());
+				item.setGTIN(article.getGtin());
+				try {
+					int amount = Integer.parseInt(article.getAmount());
+					item.setPKGSIZE(amount);
+				} catch (NumberFormatException nfe) {
+					System.out.println(item.getGTIN() + ": Invalid number string "
+						+ article.getAmount() + " in sequences");
+				}
+				
+				item.setPKGSIZESTRING(article.getAmount() + " " + article.getMunit());
+				item.setMEASURE(article.getMunit());
+				
+				
+				
+				if(!inactivePharmaGtin.contains(item.getGTIN())) {
+					pharma++;
+					astamm.getITEMS().getITEM().add(item);
+				} else {
+					pharma_inactive++;
+				}
+			}
+		}
+	}
+	
+	private static void populateNonPharmaWoData(ARTIKELSTAMM astamm){
 		List<ART> articles = oddb2xmlArticle.getART();
 		for (ART a : articles) {
 			String salecd = a.getSALECD();
 			if (SALECD_INACTIVE.equalsIgnoreCase(salecd)) {
-				inactive++;
-				if(determineIfPharma(a)) {
-					pharma_inactive++;
-				} else {
-					nonpharma_inactive++;
-				}
+				nonpharma_inactive++;
 				continue;
 			}
 			
-			ITEM item = new ITEM();
+			if (determineIfPharma(a)) {
+				continue;
+			}
 			
-			String phar = a.getPHAR();
-			String ean = "";
+			nonpharma++;
+			
+			ITEM item = new ITEM();
+			item.setPHARMATYPE("N");
+			item.setDSCR(a.getDSCRD().trim());
+			String ean = null;
 			
 			if (a.getARTBAR() != null) {
 				if (a.getARTBAR().getBC() != null) {
@@ -142,121 +213,51 @@ public class Oddb2XmlArtikelstammGenerator {
 					ean = String.format("%013d", eanBi);
 				}
 			}
+			item.setGTIN(ean);
 			
-			BigInteger uniqueId = new BigInteger(ean + "" + phar);
-			if (articleIds.contains(uniqueId)) {
-				System.out.println("Collision detected " + uniqueId + " is already in the set.");
-				collisions++;
-				continue;
+			if (ean != null) {
+				astamm.getITEMS().getITEM().add(item);
 			} else {
-				item.setPHAR(new BigInteger(phar));
-				item.setGTIN(ean);
-				articleIds.add(uniqueId.toString());
+				System.out.println("WARN NO GTIN: " + item.getDSCR());
 			}
-			
-			// limit to max 50 chars
-			//			int dscrdL = (a.getDSCRD().trim().length() > 49) ? 50 : a.getDSCRD().trim().length();
-			//			item.setDSCR(a.getDSCRD().trim().substring(0, dscrdL));
-			item.setDSCR(a.getDSCRD().trim());
-			item.setDSCRF(a.getDSCRF().trim());
-			
-			if (a.getARTCOMP() != null) {
-				if (a.getARTCOMP().getCOMPNO() != null) {
-					COMP comp = new COMP();
-					comp.setGLN(a.getARTCOMP().getCOMPNO().toString());
-					item.setCOMP(comp);
-				}
-			}
-			
-			if (determineIfPharma(a)) {
-				amendPharmaFromOddb2XmlArticle(a, item);
-				item.setPHARMATYPE("P");
-				pharma++;
-			} else {
-				item.setPHARMATYPE("N");
-				nonpharma++;
-			}
-			
-			astamm.getITEMS().getITEM().add(item);
-			
-			setPriceInformation(a, item);
 		}
-		
+	}
+	
+	private static void enrichItemData(ARTIKELSTAMM astamm){
+		List<ITEM> items = astamm.getITEMS().getITEM();
+		for (ITEM item : items) {
+			ART art = oddbArticlesMap.get(item.getGTIN());
+			if (art != null) {
+				if (art.getARTCOMP() != null) {
+					if (art.getARTCOMP().getCOMPNO() != null) {
+						COMP comp = new COMP();
+						comp.setGLN(art.getARTCOMP().getCOMPNO().toString());
+						item.setCOMP(comp);
+					}
+				}
+				
+				amendPharmaFromOddb2XmlArticle(art, item);
+				setPriceInformation(art, item);
+			} else {
+				System.out.println("Error: could not find art for GTIN " + item.getGTIN());
+			}
+		}
 	}
 	
 	private static void amendPharmaFromOddb2XmlArticle(ART a, ITEM item){
-		// product dependen values
+		// product dependent values
 		if (item.getGTIN() != null) {
 			PRD product = Oddb2XmlHelper.getItemInProductListByGTIN(oddb2xmlProducts.getPRD(),
 				item.getGTIN());
 			if (product != null) {
-				String prodno = product.getPRODNO();
-				
-				if (prodno == null) {
-					return;
-				}
-				
-				PRODUCT astammProduct = products.get(prodno.toString());
-				if (astammProduct == null) {
-					astammProduct = new PRODUCT();
-					astammProduct.setPRODNO(prodno.toString());
-					astammProduct.setATC(product.getATC());
-					astammProduct.setDSCR(
-						(product.getDSCRD() != null) ? product.getDSCRD() : "___~~MISSING~~__");
-					astammProduct.setDSCRF(
-						(product.getDSCRF() != null) ? product.getDSCRF() : "___~~MISSING~~__");
-					
-					if (product.getATC() != null) {
-						ATCCode atcCode = ATCCodes.getInstance().getATCCode(product.getATC());
-						if (atcCode != null && atcCode.level == 5) {
-							astammProduct.setSUBSTANCE(atcCode.name_german);
-						}
-					}
-					
-					// LIMITATION
-					LIM limitation = Oddb2XmlHelper.getItemInLimitationListBySwissmedicNo(
-						oddb2xmlLimitations.getLIM(), a.getSMNO());
-					if (limitation != null) {
-						LIMITATION astammLimitation = limitations.get(limitation.getLIMNAMEBAG());
-						if (astammLimitation == null) {
-							astammLimitation = new LIMITATION();
-							astammLimitation.setDSCR(limitation.getDSCRD().trim());
-							astammLimitation.setDSCRF(limitation.getDSCRF().trim());
-							astammLimitation.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
-							// LIMITATION_PTS
-							if (limitation.getLIMVAL() != null
-								&& limitation.getLIMVAL().length() > 0) {
-								astammLimitation
-									.setLIMITATIONPTS(Integer.parseInt(limitation.getLIMVAL()));
-							}
-							limitations.put(limitation.getLIMNAMEBAG(), astammLimitation);
-						}
-						astammProduct.setLIMNAMEBAG(limitation.getLIMNAMEBAG());
-					}
-					
-					// TODO set text
-					products.put(prodno.toString(), astammProduct);
-				}
-				
-				item.setPRODNO(prodno.toString());
-				
-				String measure = null;
-				Sequence sequence = sequences.get(prodno.toString());
-				if (sequence != null) {
-					SequenceItem sequenceItem = sequence.getSequenceItems().get(item.getGTIN());
-					if (sequenceItem != null) {
-						measure = sequenceItem.getMunit();
-					}
-				}
-				
+				String measure = item.getMEASURE();
 				if (measure == null && product.getEinheitSwissmedic() != null) {
 					measure = product.getEinheitSwissmedic();
 				}
-				
 				item.setMEASURE(measure);
 				
 				// PKG_SIZE
-				if (product.getPackGrSwissmedic() != null) {
+				if (product.getPackGrSwissmedic() != null && item.getPKGSIZE() == null) {
 					if (measure != null) {
 						item.setPKGSIZESTRING(product.getPackGrSwissmedic() + " " + measure);
 					} else {
@@ -281,7 +282,6 @@ public class Oddb2XmlArtikelstammGenerator {
 				// remove for the time being - 4194
 				gencd = ("C".equalsIgnoreCase(gencd)) ? null : gencd;
 				item.setGENERICTYPE(gencd);
-				
 			} else {
 				System.out.println(
 					"[WARNING] No product for " + a.getPHAR() + "/" + a.getDSCRD() + " found.");
@@ -302,6 +302,11 @@ public class Oddb2XmlArtikelstammGenerator {
 				if (nincdInt == 20)
 					item.setLPPV(true);
 			}
+		}
+		
+		item.setDSCRF(a.getDSCRF());
+		if(a.getPHAR()!=null) {
+			item.setPHAR(new BigInteger(a.getPHAR()));
 		}
 		
 		// IKSCAT
@@ -434,6 +439,21 @@ public class Oddb2XmlArtikelstammGenerator {
 		oddb2xmlProducts = (com.ywesee.oddb2xml.product.PRODUCT) Oddb2XmlHelper
 			.unmarshallFile(oddb2xmlProductFileObj);
 		sequences = Oddb2XmlHelper.unmarshallSequences(oddb2xmlSequencesFileObj);
+		
+		List<ART> articles = oddb2xmlArticle.getART();
+		for (ART article : articles) {
+			if (article.getARTBAR() != null) {
+				String ean;
+				if (article.getARTBAR().getBC() != null) {
+					BigInteger eanBi = article.getARTBAR().getBC();
+					ean = String.format("%013d", eanBi);
+					oddbArticlesMap.put(ean, article);
+					if(article.getSALECD()!=null && "I".equalsIgnoreCase(article.getSALECD())) {
+						inactivePharmaGtin.add(ean);
+					}
+				}
+			}
+		}
 	}
 	
 }

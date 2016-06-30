@@ -22,6 +22,7 @@ import at.medevit.ch.artikelstamm.ARTIKELSTAMM;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEMS;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.LIMITATIONS;
 import at.medevit.ch.artikelstamm.ARTIKELSTAMM.PRODUCTS;
+import at.medevit.stammdaten.converter.Oddb2XmlArtikelstammGeneratorV4;
 import at.medevit.ch.artikelstamm.ArtikelstammHelper;
 
 /**
@@ -104,7 +105,10 @@ public class ConvertV4 {
 			astamm.setPRODUCTS(new PRODUCTS());
 			astamm.setLIMITATIONS(new LIMITATIONS());
 			
-			Oddb2XmlArtikelstammGenerator.generate(astamm, oddb2xmlArticleFileObj,
+			// old format #4836
+//			Oddb2XmlArtikelstammGenerator.generate(astamm, oddb2xmlArticleFileObj,
+//				oddb2xmlProductFileObj, oddb2xmlLimitationFileObj, oddb2xmlSequencesFileObj);
+			Oddb2XmlArtikelstammGeneratorV4.generate(astamm, oddb2xmlArticleFileObj,
 				oddb2xmlProductFileObj, oddb2xmlLimitationFileObj, oddb2xmlSequencesFileObj);
 			
 			File outputFile =

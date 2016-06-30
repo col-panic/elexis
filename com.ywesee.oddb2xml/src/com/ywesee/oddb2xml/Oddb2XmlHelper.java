@@ -108,8 +108,8 @@ public class Oddb2XmlHelper {
 				"[INFO] Initializing productList HashMap with " + productList.size() + " elements");
 			productListCache = new HashMap<String, PRD>(productList.size());
 			for (PRD item : productList) {
-				if (item.getGTIN() != null && item.getPRODNO() != null) {
-					productListCache.put(item.getGTIN().toString(), item);
+				if (item.getGTIN() != null) {
+					productListCache.put(item.getGTIN().toString().trim(), item);
 				} else {
 					System.out.println("[ERROR] No GTIN for product-item " + item + " found!");
 				}
@@ -124,7 +124,7 @@ public class Oddb2XmlHelper {
 		throws IOException{
 		InputStream is = new FileInputStream(oddb2xmlSequencesFileObj);
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
-			return br.lines().map(Sequence.mapToPerson)
+			return br.lines().map(Sequence.mapToSequence)
 				.collect(Collectors.toMap(Sequence::getProdno, Function.identity()));
 		}
 		
