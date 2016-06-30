@@ -205,6 +205,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 			ITEM item = new ITEM();
 			item.setPHARMATYPE("N");
 			item.setDSCR(a.getDSCRD().trim());
+			item.setDSCRF(a.getDSCRF().trim());
 			String ean = null;
 			
 			if (a.getARTBAR() != null) {
@@ -228,6 +229,8 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 		for (ITEM item : items) {
 			ART art = oddbArticlesMap.get(item.getGTIN());
 			if (art != null) {
+				item.setDSCRF(art.getDSCRF());
+				
 				if (art.getARTCOMP() != null) {
 					if (art.getARTCOMP().getCOMPNO() != null) {
 						COMP comp = new COMP();
@@ -239,12 +242,14 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 				amendPharmaFromOddb2XmlArticle(art, item);
 				setPriceInformation(art, item);
 			} else {
+				item.setDSCRF("___~~MISSING~~__");
+				
 				System.out.println("Error: could not find art for GTIN " + item.getGTIN());
 			}
 		}
 	}
 	
-	private static void amendPharmaFromOddb2XmlArticle(ART a, ITEM item){
+	private static void amendPharmaFromOddb2XmlArticle(ART a, ITEM item){		
 		// product dependent values
 		if (item.getGTIN() != null) {
 			PRD product = Oddb2XmlHelper.getItemInProductListByGTIN(oddb2xmlProducts.getPRD(),
@@ -304,7 +309,6 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 			}
 		}
 		
-		item.setDSCRF(a.getDSCRF());
 		if(a.getPHAR()!=null) {
 			item.setPHAR(new BigInteger(a.getPHAR()));
 		}
