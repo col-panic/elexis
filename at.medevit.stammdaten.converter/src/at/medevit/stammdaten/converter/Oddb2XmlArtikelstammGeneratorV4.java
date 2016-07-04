@@ -14,13 +14,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
-
-import org.omg.PortableInterceptor.NON_EXISTENT;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
 import com.ywesee.oddb2xml.Sequence;
@@ -66,7 +65,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 	private static int pharma_inactive = 0;
 	private static int nonpharma = 0;
 	private static int nonpharma_inactive = 0;
-
+	
 	public static void generate(ARTIKELSTAMM astamm, File oddb2xmlArticleFileObj,
 		File oddb2xmlProductFileObj, File oddb2xmlLimitationFileObj, File oddb2xmlSequencesFileObj)
 		throws JAXBException, DatatypeConfigurationException, ParseException, IOException{
@@ -78,6 +77,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 		setArtikelstammHeaderInfo(astamm);
 		System.out.println("Import pharma articles from oddb_sequences");
 		populatePharmaWoDataAndProducts(astamm);
+		removeProductsWithNoItemsAvailable(astamm);
 		System.out.println("Import non-pharma articles from oddb_article");
 		populateNonPharmaWoData(astamm);
 		System.out.println("Enrich ITEM information");
@@ -85,8 +85,26 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 		System.out.println("Ammend LIMITATION information");
 		amendLimitationInformation(astamm);
 		
-		System.out.println("PHARMA: "+pharma+" NON-PHARMA: "+nonpharma);
+		System.out.println("PHARMA: " + pharma + " NON-PHARMA: " + nonpharma);
 		System.out.println("PHARMA I: " + pharma_inactive + " NON-PHARMA I: " + nonpharma_inactive);
+	}
+	
+	/**
+	 * Remove PRODUCT entries for which no ITEM is in the list (might be removed as not available in trade)
+	 */
+	private static void removeProductsWithNoItemsAvailable(ARTIKELSTAMM astamm){
+		Set<PRODUCT> prodNos =
+			astamm.getPRODUCTS().getPRODUCT().stream().collect(Collectors.toSet());
+		for (PRODUCT prodNo : prodNos) {
+			long count = 0;
+			count = astamm.getITEMS().getITEM().stream()
+				.filter(i -> prodNo.getPRODNO().equalsIgnoreCase(i.getPRODNO())).count();
+			if (count == 0) {
+				System.out.println("Removing product " + prodNo.getPRODNO() + " " + prodNo.getDSCR()
+					+ " as no items referenced.");
+				astamm.getPRODUCTS().getPRODUCT().remove(prodNo);
+			}
+		}
 	}
 	
 	private static void amendLimitationInformation(ARTIKELSTAMM astamm){
