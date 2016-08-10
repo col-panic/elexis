@@ -1,11 +1,15 @@
 package at.medevit.stammdaten.converter;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -53,7 +57,6 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 	private static com.ywesee.oddb2xml.product.PRODUCT oddb2xmlProducts;
 	
 	private static Map<String, ART> oddbArticlesMap = new HashMap<String, ART>();
-	private static Map<String, PRODUCT> products = new HashMap<String, PRODUCT>();
 	private static Map<String, LIMITATION> limitations = new HashMap<String, LIMITATION>();
 	private static Map<String, Sequence> sequences = new HashMap<String, Sequence>();
 	
@@ -84,13 +87,52 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 		enrichItemData(astamm);
 		System.out.println("Ammend LIMITATION information");
 		amendLimitationInformation(astamm);
+		generateOverviewFile(astamm);
 		
 		System.out.println("PHARMA: " + pharma + " NON-PHARMA: " + nonpharma);
 		System.out.println("PHARMA I: " + pharma_inactive + " NON-PHARMA I: " + nonpharma_inactive);
 	}
 	
+	private static void generateOverviewFile(ARTIKELSTAMM astamm){
+		File outFile = new File("overview.txt");
+		try(PrintWriter out = new PrintWriter(outFile)) {
+			List<ITEM> items = astamm.getITEMS().getITEM();
+			Collections.sort(items, new Comparator<ITEM>() {
+
+				@Override
+				public int compare(ITEM o1, ITEM o2){
+					return o1.getDSCR().compareTo(o2.getDSCR());
+				}
+				
+			});
+			for (ITEM item : items) {
+				out.write(item.getDSCR()+" ["+item.getGTIN()+"]: ");
+				if(item.getPRODNO()!=null) {
+					Sequence sequence = sequences.get(item.getPRODNO());
+					if(sequence != null) {
+						out.write("\t\t(S)"+sequence.getDscr()+" ["+sequence.getProdno()+"]");
+					}
+					
+					 PRD prod = Oddb2XmlHelper.getItemInProductListByGTIN(oddb2xmlProducts.getPRD(),
+							item.getGTIN());
+					 if(prod!= null) {
+						 out.write("\t\t(P)"+prod.getDSCRD()+" ["+prod.getPRODNO()+"]");
+					 }
+				}
+				out.write("\n");
+			}
+			
+			out.flush();
+			System.out.println("Overview file written to "+outFile.getAbsolutePath());
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
+		
+	}
+	
 	/**
-	 * Remove PRODUCT entries for which no ITEM is in the list (might be removed as not available in trade)
+	 * Remove PRODUCT entries for which no ITEM is in the list (might be removed as not available in
+	 * trade)
 	 */
 	private static void removeProductsWithNoItemsAvailable(ARTIKELSTAMM astamm){
 		Set<PRODUCT> prodNos =
@@ -193,14 +235,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 				item.setPKGSIZESTRING(article.getAmount() + " " + article.getMunit());
 				item.setMEASURE(article.getMunit());
 				
-				
-				
-				if(!inactivePharmaGtin.contains(item.getGTIN())) {
-					pharma++;
-					astamm.getITEMS().getITEM().add(item);
-				} else {
-					pharma_inactive++;
-				}
+				astamm.getITEMS().getITEM().add(item);
 			}
 		}
 	}
@@ -267,7 +302,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 		}
 	}
 	
-	private static void amendPharmaFromOddb2XmlArticle(ART a, ITEM item){		
+	private static void amendPharmaFromOddb2XmlArticle(ART a, ITEM item){
 		// product dependent values
 		if (item.getGTIN() != null) {
 			PRD product = Oddb2XmlHelper.getItemInProductListByGTIN(oddb2xmlProducts.getPRD(),
@@ -307,7 +342,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 				item.setGENERICTYPE(gencd);
 			} else {
 				System.out.println(
-					"[WARNING] No product for " + a.getPHAR() + "/" + a.getDSCRD() + " found.");
+					"[WARNING] No product for " + a.getPHAR() + "/" + a.getDSCRD() + " found, not enriching data.");
 			}
 		} else {
 			System.out.println("[WARNING] No GTIN for " + a.getPHAR() + "/" + a.getDSCRD()
@@ -327,7 +362,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 			}
 		}
 		
-		if(a.getPHAR()!=null) {
+		if (a.getPHAR() != null) {
 			item.setPHAR(new BigInteger(a.getPHAR()));
 		}
 		
@@ -470,7 +505,7 @@ public class Oddb2XmlArtikelstammGeneratorV4 {
 					BigInteger eanBi = article.getARTBAR().getBC();
 					ean = String.format("%013d", eanBi);
 					oddbArticlesMap.put(ean, article);
-					if(article.getSALECD()!=null && "I".equalsIgnoreCase(article.getSALECD())) {
+					if (article.getSALECD() != null && "I".equalsIgnoreCase(article.getSALECD())) {
 						inactivePharmaGtin.add(ean);
 					}
 				}

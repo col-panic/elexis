@@ -115,8 +115,9 @@ public class Oddb2XmlHelper {
 				}
 			}
 		}
-		if (productListCache.containsKey(gtin))
+		if (productListCache.containsKey(gtin)) {
 			return productListCache.get(gtin);
+		}
 		return null;
 	}
 	

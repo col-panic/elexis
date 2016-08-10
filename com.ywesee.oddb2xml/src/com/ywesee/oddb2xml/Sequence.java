@@ -1,9 +1,7 @@
 package com.ywesee.oddb2xml;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -42,6 +40,9 @@ public class Sequence {
 		String[] p = line.split(";", Integer.MAX_VALUE);
 		String prodno = p[0];
 		p = Arrays.copyOfRange(p, 1, p.length);
+		if (p.length < 6) {
+			System.out.println("ERROR in sequence [" + line + "]");
+		}
 		for (int i = 0; i < (p.length / 6); i++) {
 			String[] value = Arrays.copyOfRange(p, i * 6, ((i + 1) * 6));
 			if (i == 0) {
