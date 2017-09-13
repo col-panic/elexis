@@ -16,6 +16,6 @@
 <booleanAttribute key="org.eclipse.jdt.launching.DEFAULT_CLASSPATH" value="false"/>
 <stringAttribute key="org.eclipse.jdt.launching.JRE_CONTAINER" value="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/CDC-1.0%Foundation-1.0"/>
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="at.medevit.stammdaten.converter.v2.ConvertV4"/>
-<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="--oddb2xmlArticleFile  &quot;/Users/marco/Desktop/StammdatenNeu/oddb_article.xml&quot; --oddb2xmlLimitationFile  &quot;/Users/marco/Desktop/StammdatenNeu/oddb_limitation.xml&quot; --oddb2xmlProductFile &quot;/Users/marco/Desktop/StammdatenNeu/oddb_product.xml&quot; --oddb2xmlSequencesFile &quot;/Users/marco/Desktop/StammdatenNeu/oddb2xml_swissmedic_sequences.csv&quot;"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="${string_prompt:“oddb2xml“: -oddb2xmlSequencesFile ${project_loc}/sampleData/oddb2xml_swissmedic_sequences.csv &#10;-oddb2xmlProductFile ${project_loc}/sampleData/oddb_product.xml&#10;-oddb2xmlArticleFile ${project_loc}/sampleData/oddb_article.xml&#10;-oddb2xmlLimitationFile ${project_loc}/sampleData/oddb_limitation.xml}"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="at.medevit.stammdaten.converter"/>
 </launchConfiguration>

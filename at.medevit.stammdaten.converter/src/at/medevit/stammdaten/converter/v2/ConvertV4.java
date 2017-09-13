@@ -18,12 +18,12 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.xml.sax.SAXException;
 
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEMS;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.LIMITATIONS;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.PRODUCTS;
+import at.medevit.stammdaten.converter.ArtikelstammHelper;
 import at.medevit.stammdaten.converter.Oddb2XmlArtikelstammGeneratorV4;
-import at.medevit.ch.artikelstamm.ArtikelstammHelper;
+import info.artikelstamm.model.v4.ARTIKELSTAMM;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.ITEMS;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.LIMITATIONS;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.PRODUCTS;
 
 /**
  * Support for Elexis_Artikelstamm_v4.xsd

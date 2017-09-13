@@ -2,6 +2,8 @@ h1. Artikelstamm Datensatz Konverter
 
 __Copyright 2013, MEDEVIT <office@medevit.at>__ 
 
+**Erstellt Elexis_Artikelstamm_v4.xsd konforme Daten!** 
+
 @Convert@ erstellt auf der Basis der "swissindex":http://www.refdata.ch Daten, welche mittels  @at.medevit.swissindex.client@ bezogen werden den Artikelstamm Datensatz (siehe @at.medevit.ch.artikelstamm@). 
 
 Es existieren mehrere Varianten dieses Datensatzes. @Convert@ unterstützt dabei die Varianten @v1@  und @v1b@. Informationen dazu, die aktuelle Dokumentation zu diesem Format, sowie aktuelle Datensätze sind unter "Elexis Artikelstamm Information":http://artikelstamm.elexis.info zu finden.

@@ -19,23 +19,23 @@ import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import com.ywesee.oddb2xml.Oddb2XmlHelper;
-import com.ywesee.oddb2xml.Sequence;
-import com.ywesee.oddb2xml.Sequence.SequenceItem;
 import com.ywesee.oddb2xml.article.ART;
 import com.ywesee.oddb2xml.article.ARTBAR;
 import com.ywesee.oddb2xml.article.ARTICLE;
 import com.ywesee.oddb2xml.article.ARTPRI;
 import com.ywesee.oddb2xml.limitation.LIM;
 import com.ywesee.oddb2xml.product.PRD;
+import com.ywesee.oddb2xml.sequences.Sequence;
+import com.ywesee.oddb2xml.sequences.Sequence.SequenceItem;
+import com.ywesee.oddb2xml.sequences.SequencesHelper;
 
 import at.medevit.atc_codes.ATCCode;
 import at.medevit.atc_codes.internal.ATCCodes;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEMS.ITEM;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.ITEMS.ITEM.COMP;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.LIMITATIONS.LIMITATION;
-import at.medevit.ch.artikelstamm.ARTIKELSTAMM.PRODUCTS.PRODUCT;
-import at.medevit.ch.artikelstamm.ArtikelstammHelper;
+import info.artikelstamm.model.v4.ARTIKELSTAMM;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.ITEMS.ITEM;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.ITEMS.ITEM.COMP;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.LIMITATIONS.LIMITATION;
+import info.artikelstamm.model.v4.ARTIKELSTAMM.PRODUCTS.PRODUCT;
 
 public class Oddb2XmlArtikelstammGenerator {
 	
@@ -123,12 +123,12 @@ public class Oddb2XmlArtikelstammGenerator {
 			String salecd = a.getSALECD();
 			if (SALECD_INACTIVE.equalsIgnoreCase(salecd)) {
 				inactive++;
-				if(determineIfPharma(a)) {
+				if (determineIfPharma(a)) {
 					pharma_inactive++;
 				} else {
 					nonpharma_inactive++;
 				}
-				continue;
+				//				continue;
 			}
 			
 			ITEM item = new ITEM();
@@ -433,7 +433,7 @@ public class Oddb2XmlArtikelstammGenerator {
 			.unmarshallFile(oddb2xmlLimitationFileObj);
 		oddb2xmlProducts = (com.ywesee.oddb2xml.product.PRODUCT) Oddb2XmlHelper
 			.unmarshallFile(oddb2xmlProductFileObj);
-		sequences = Oddb2XmlHelper.unmarshallSequences(oddb2xmlSequencesFileObj);
+		sequences = SequencesHelper.unmarshallSequences(oddb2xmlSequencesFileObj);
 	}
 	
 }
