@@ -19,6 +19,7 @@ import org.apache.commons.cli.ParseException;
 import org.xml.sax.SAXException;
 
 import at.medevit.stammdaten.converter.ArtikelstammHelper;
+import at.medevit.stammdaten.converter.ArtikelstammValidator;
 import at.medevit.stammdaten.converter.Oddb2XmlArtikelstammGeneratorV4;
 import info.artikelstamm.model.v4.ARTIKELSTAMM;
 import info.artikelstamm.model.v4.ARTIKELSTAMM.ITEMS;
@@ -111,11 +112,19 @@ public class ConvertV4 {
 			Oddb2XmlArtikelstammGeneratorV4.generate(astamm, oddb2xmlArticleFileObj,
 				oddb2xmlProductFileObj, oddb2xmlLimitationFileObj, oddb2xmlSequencesFileObj);
 			
+			System.out.println("---------- VALIDATING ARTIKELSTAMM ----------");
+			
+			ArtikelstammValidator av = new ArtikelstammValidator(astamm);
+			boolean error = av.validate();
+			if(error) {
+				System.out.println("Validation error in target file. Exiting.");
+				System.exit(-1);
+			}
+			
 			File outputFile =
 				ArtikelstammHelper.determineOutputFileName(astamm, oddb2xmlArticleFileObj, null);
 			ArtikelstammHelper.marshallToFileSystem(astamm, outputFile);
 			System.out.println("[OK] " + outputFile.getAbsolutePath());
-			
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (JAXBException e) {
@@ -127,6 +136,8 @@ public class ConvertV4 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+
 	}
 
 }

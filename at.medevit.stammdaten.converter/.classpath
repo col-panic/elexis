@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/at.medevit.atc_codes"/>
 	<classpathentry kind="lib" path="lib/slf4j-simple-1.7.21.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/info.artikelstamm.model"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
