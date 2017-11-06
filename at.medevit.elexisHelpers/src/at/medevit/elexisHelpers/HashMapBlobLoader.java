@@ -69,6 +69,17 @@ public class HashMapBlobLoader {
 			System.out.println("\t -> " + MFUList.class.getName());
 			return ts(ml.getAll());
 		}
+		
+		try {
+			// try to unpack as list of strings (e.g. Rechnungen)
+			List<String> list = StringTool.unpack((byte[]) object);
+			for (int i = 0; i < list.size(); i++) {
+				String s = list.get(i);
+				System.out.println("\t " + i + "/" + list.size() + ": " + s);
+			}
+			return null;
+		} catch (ClassCastException ce) {}
+		
 		return object.toString();
 	}
 }
